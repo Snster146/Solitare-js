@@ -1,0 +1,22 @@
+How to Dynamically Add Images to HTML with JavaScript
+https://youtu.be/iIKQQVnXP9Q?si=FRmdbsOnUO24FZ4n
+
+https://stackoverflow.com/questions/5195303/set-css-property-in-javascript
+
+JavaScript Modules
+https://www.w3schools.com/js/js_modules.asp
+
+Getting a random value from a JavaScript array
+https://stackoverflow.com/questions/4550505/getting-a-random-value-from-a-javascript-array
+
+How get random item from es6 Map or Set
+https://stackoverflow.com/questions/42739256/how-get-random-item-from-es6-map-or-set
+
+String slicing in javascript
+https://bobbyhadz.com/blog/javascript-split-string-by-index#:~:text=To%20split%20a%20string%20at%20a%20specific%20index%3A,3%20str.slice%28index%29%20returns%20the%20remainder%20of%20the%20string
+
+Check if Array contains any element of another Array in JS
+https://dev.to/askyt/check-if-array-contains-any-element-of-another-array-in-js-583i
+
+How can I remove a specific item from an array in JavaScript?
+https://stackoverflow.com/questions/5767325/how-can-i-remove-a-specific-item-from-an-array-in-javascript
