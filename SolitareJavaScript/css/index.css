@@ -1,0 +1,70 @@
+@font-face {
+    font-family: '8bitfont';
+    src: url(../font/04B_03__.TTF);
+}
+
+body{
+    background-color: #3b8f59;
+    font-size: 16px;
+    color: #ffffff;
+    font-family:'8bitfont' ;
+    text-shadow: 5px 5px black;
+}
+a{
+    text-decoration: none;
+    color: #ffffff;
+    /* font-size: 5em; */
+}
+
+.wrapper{
+    display: flex;
+    align-items: center;
+    /* border: solid; */
+    flex-direction: column;
+    /* align-items: center; */
+    background-color: #367a4e;
+}
+
+.header{
+    display: flex;
+    border:solid gold 5px ;
+    background-image: linear-gradient(to bottom, #b4202a, red);
+    width: 70%;
+    justify-content: center;
+    font-size: 4em;
+    opacity: 0.5;
+    padding:1%;
+
+}
+.header p:hover{
+    color:#367a4e;
+}
+.header h1:hover{
+    color:#367a4e;
+}
+
+#navbar-header,#img-header{
+    margin-top: 1%;
+    justify-content: space-evenly;
+    font-size: 3em;
+}
+#navbar-header:hover{
+    background-color: #285cc4;
+}
+
+a:hover{
+    color: #3b8f59;
+}
+
+sub{
+    text-shadow: none;
+}
+footer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    position: absolute;
+    top: 95%; 
+}
+

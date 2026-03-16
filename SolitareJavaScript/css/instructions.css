@@ -1,0 +1,50 @@
+.header{
+    font-size: 16px;
+}
+#header-title{
+    font-size: 4em;
+}
+
+#instructions-header{
+    margin-top: 1%;
+    flex-direction: column;
+    align-items: center;
+}
+#instructions-header h1{
+    font-size: 3em;
+}
+
+#instructions-p{
+    font-size: 2em;   
+}
+
+#btn-wrapper{
+    margin-top: 1%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    background: none;
+}
+
+.instrucbtn{
+    margin-top: 2%;
+    font-family: inherit;
+    color: inherit;
+    height: 100%;
+    width: 100%;
+    background-image: linear-gradient(to bottom, #b4202a, red);
+    border: solid gold;
+    border-radius: 5px;
+    font-size: 4em;
+    opacity: 0.6;
+}
+#btn-wrapper a{
+    margin: 1%;
+}
+#nxt-info-btn,#nxt-rule-btn{
+    background-image: linear-gradient(to bottom,#2596be,#034866);
+}
+
+.instrucbtn:hover{
+    opacity: 1;
+}
