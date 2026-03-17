@@ -1,7 +1,12 @@
+@font-face {
+    font-family: '8bitfont';
+    src: url(../font/04B_03__.TTF);
+}
+
 body{
     background:#3b8f59;
     margin:0;
-    font-size:16px;
+    font-size:32px;
     color:white;
     font-family:'8bitfont', sans-serif;
 }
@@ -14,9 +19,8 @@ body{
 .top-row{
 
     display:flex;
-    justify-content:space-between;
-    margin-bottom:40px;
-    padding: 5%;
+    margin-bottom:1%;
+    padding: 1%;
     
 }
 
@@ -27,26 +31,23 @@ body{
     justify-content: center;
     
 }
-.bottom-row{
-    display: flex;
-}
+
 
 .tableau-area{
     display: flex;
     width: 100%;
-    justify-content: space-evenly;
+    justify-content: center;
+    gap:1%;
 }
 
 .foundation-area{
     display:flex;
     gap:20px;
     width: 50%;
-    justify-content: center;
 }
 
 .tableau{
     display:flex;
-    justify-content:space-between;
 }
 
 .column{
@@ -79,3 +80,23 @@ body{
     height: inherit;
     margin-top:-100% ;
 }
+footer{
+    width: 100%;
+    height: 225px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 16%;
+}
+
+.go-back-btn{
+    font-family: inherit;
+    color: inherit;
+    width: 7%;
+    height: 50%;
+    background-image: linear-gradient(to bottom, #b4202a, red);
+    border: solid 1px gold;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
