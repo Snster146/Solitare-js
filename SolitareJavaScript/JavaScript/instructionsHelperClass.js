@@ -16,11 +16,12 @@ export class Instructions {
 
     // setter
     set counter(value) {
-        if (value === this.instructionTitles.length) {
-            this._counter = 0;
-        } else {
-            this._counter = value;
-        }
+        value === this.instructionTitles.length ? this._counter=0 :this._counter=value;
+        // if (value === this.instructionTitles.length) {
+        //     this._counter = 0;
+        // } else {
+        //     this._counter = value;
+        // }
     }
 
     set instructionsMapSetter(map) {
