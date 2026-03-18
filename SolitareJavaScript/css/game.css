@@ -3,64 +3,63 @@
     src: url(../font/04B_03__.TTF);
 }
 
-body{
-    background:#3b8f59;
-    margin:0;
-    font-size:32px;
-    color:white;
-    font-family:'8bitfont', sans-serif;
-}
-
-.game{
-    width:100%;
-    margin:auto;
-}
-
-.top-row{
-
-    display:flex;
-    margin-bottom:1%;
-    padding: 1%;
-    
-}
-
-.stock-area{
-    display:flex;
-    gap:20px;
-    width: 50%;
-    justify-content: center;
-    
-}
-
-
-.tableau-area{
+.game {
     display: flex;
-    width: 100%;
+    flex-direction: column;
+    min-height: 100vh;
+    gap: 20px;
+    padding: 10px;
+    background-color: #367a4e;
+    font-family: '8bitfont';
+    font-size: 32px;
+    color:white
+}
+
+.bottom-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 5%;
+}
+
+.top-row {
+    display: flex;
+    justify-content: space-evenly;
+
+    background: linear-gradient(to bottom, #b4202a, red);
+    border: solid gold 5px;
+    padding:2%;
+    border-radius: 10px;
+
+}
+
+.stock-area {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 2%;
+
+}
+
+.foundation-area {
+    display: flex;
+    gap: 20px;
+}
+
+.tableau-area {
+    display: flex;
     justify-content: center;
-    gap:1%;
-}
+    gap: 15px;
+    height: 50vh;
+    background: #2e6f45; 
+    border: solid gold 5px;
+    padding: 20px;
+    border-radius: 10px;
+    background-image: linear-gradient(to bottom, #b4202a, red);
 
-.foundation-area{
-    display:flex;
-    gap:20px;
-    width: 50%;
-}
-
-.tableau{
-    display:flex;
-}
-
-.column{
-    width:25%;
-    min-height:100%;
 }
 
 .card{
     width:200px;
     height: 250px;
-
-    border-radius:8px;
-    border-radius: 20px;
 
 }
 
@@ -69,34 +68,51 @@ body{
     height:100%;
 }
 .card-another:nth-child(1){
-    margin-top: 20%;
+    margin-top: 15%;
 }
 
 .card-another{
     border-radius: 20px;
-    border: 2px solid black;
-    background: white;
-    color: #3b8f59;
     height: inherit;
     margin-top:-100% ;
 }
+
+
 footer{
-    width: 100%;
-    height: 225px;
-    display: flex;
+
+    position: absolute;
+    top:44%;
+    display:flex;
     flex-direction: column;
+    border: solid gold 5px;
+    border-radius: 10px;
+
+    height:39%;
+    padding: 1%;
+    
+    margin-left: 0.5%;
+    
     align-items: center;
-    margin-top: 16%;
+    justify-content: space-evenly;
+    background-image: linear-gradient(to bottom,#2596be,#034866);
+
 }
+
+
+
+
+
 
 .go-back-btn{
     font-family: inherit;
     color: inherit;
-    width: 7%;
-    height: 50%;
+
+    height: 20%;
     background-image: linear-gradient(to bottom, #b4202a, red);
-    border: solid 1px gold;
+    border: solid 4px gold;
+    padding:5px;
     border-radius: 5px;
     font-size: 1em;
-}
+
+} 
 
