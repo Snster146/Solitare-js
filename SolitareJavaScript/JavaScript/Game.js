@@ -1,9 +1,13 @@
 //import necessary maps and arrays
 import { HeartCards, SpadeCards, ClubCards, DiamondCards,Allcard } from "./CardMaps.js";
 import{ SelectRandomCard,visitedCards} from "./Random.js";
-import {foundation1,foundation2,foundation3,foundation4,foundation5,foundation6,foundation7, stockCards } from "./fillPiles.js";
+import {tableau1,tableau2,tableau3,tableau4,tableau5,tableau6,tableau7, stockCards } from "./fillPiles.js";
+var stockCards2=[]
+var foundationpiles=[document.getElementById("foundation-1"),document.getElementById("foundation-2")
+    ,document.getElementById("foundation-3"),document.getElementById("foundation-4")]
+var foundationState=[null,null,null,null];
 
-function getCardImg(cardArr){
+function getCardImgArr(cardArr){
     let cardlImages=[]
     for (let i =0;i<cardArr.length;i++){
         switch(cardArr[i][0]){
@@ -25,125 +29,175 @@ function getCardImg(cardArr){
     return cardlImages;
 }
 
-function addfoundationcards(){
-    addfoundation1Cards();
-    addfoundation2Cards();
-    addfoundation3Cards();
-    addfoundation4Cards();
-    addfoundation5Cards();
-    addfoundation6Cards();
-    addfoundation7Cards();
+function getCardImg(cardName){
+    switch(cardName[0]){
+            // if of Heart set 
+        case "H":
+            return HeartCards.get(cardName);
+            break;
+        case "D":
+            return DiamondCards.get(cardName);
+            break;
+        case "S":
+            return SpadeCards.get(cardName);
+            break;
+        case "C":
+            return ClubCards.get(cardName);
+            break;
+        }
 }
 
-function addfoundation1Cards(){
-    let cardfound1=document.getElementById("card-foundation-1-1");
-    let cardimages=getCardImg(foundation1);
-    cardfound1.src=cardimages[0];
+function addtableaucards(){
+    addtableau1Cards();
+    addtableau2Cards();
+    addtableau3Cards();
+    addtableau4Cards();
+    addtableau5Cards();
+    addtableau6Cards();
+    addtableau7Cards();
 }
 
-function addfoundation2Cards(){
-    let cardfound21 = document.getElementById("card-foundation-2-1");
-    let cardfound22 = document.getElementById("card-foundation-2-2");
-
-    
-    let cardImages = getCardImg(foundation2);
-    
-    
-    cardfound21.src = "../images/pixelart/emptyCard.png";
-    cardfound22.src=cardImages[0];
+function addtableau1Cards(){
+    let cardtableau1=document.getElementById("card-tableau-1-1");
+    let cardimages=getCardImgArr(tableau1);
+    cardtableau1.src=cardimages[0];
 }
 
-function addfoundation3Cards(){
-    let cardfound31 = document.getElementById("card-foundation-3-1");
-    let cardfound32 = document.getElementById("card-foundation-3-2");
-    let cardfound33 = document.getElementById("card-foundation-3-3");
+function addtableau2Cards(){
+    let cardtableau21 = document.getElementById("card-tableau-2-1");
+    let cardtableau22 = document.getElementById("card-tableau-2-2");
 
     
-    let cardImages = getCardImg(foundation3);
+    let cardImages = getCardImgArr(tableau2);
     
     
-    cardfound31.src = "../images/pixelart/emptyCard.png";
-    cardfound32.src="../images/pixelart/emptyCard.png";
-    cardfound33.src=cardImages[0];
+    cardtableau21.src = "../images/pixelart/emptyCard.png";
+    cardtableau22.src=cardImages[0];
 }
-function addfoundation4Cards(){
-    let cardfound41 = document.getElementById("card-foundation-4-1");
-    let cardfound42 = document.getElementById("card-foundation-4-2");
-    let cardfound43 = document.getElementById("card-foundation-4-3");
-    let cardfound44 = document.getElementById("card-foundation-4-4");
+
+function addtableau3Cards(){
+    let cardtableau31 = document.getElementById("card-tableau-3-1");
+    let cardtableau32 = document.getElementById("card-tableau-3-2");
+    let cardtableau33 = document.getElementById("card-tableau-3-3");
 
     
-    let cardImages = getCardImg(foundation4);
+    let cardImages = getCardImgArr(tableau3);
     
     
-    cardfound41.src = "../images/pixelart/emptyCard.png";
-    cardfound42.src="../images/pixelart/emptyCard.png";
-    cardfound43.src="../images/pixelart/emptyCard.png";
-    cardfound44.src=cardImages[0];
-
+    cardtableau31.src = "../images/pixelart/emptyCard.png";
+    cardtableau32.src="../images/pixelart/emptyCard.png";
+    cardtableau33.src=cardImages[0];
 }
-function addfoundation5Cards(){
-    let cardfound51 = document.getElementById("card-foundation-5-1");
-    let cardfound52 = document.getElementById("card-foundation-5-2");
-    let cardfound53 = document.getElementById("card-foundation-5-3");
-    let cardfound54 = document.getElementById("card-foundation-5-4");
-    let cardfound55 = document.getElementById("card-foundation-5-5");
+function addtableau4Cards(){
+    let cardtableau41 = document.getElementById("card-tableau-4-1");
+    let cardtableau42 = document.getElementById("card-tableau-4-2");
+    let cardtableau43 = document.getElementById("card-tableau-4-3");
+    let cardtableau44 = document.getElementById("card-tableau-4-4");
 
     
-    let cardImages = getCardImg(foundation5);
+    let cardImages = getCardImgArr(tableau4);
     
     
-    cardfound51.src = "../images/pixelart/emptyCard.png";
-    cardfound52.src="../images/pixelart/emptyCard.png";
-    cardfound53.src="../images/pixelart/emptyCard.png";
-    cardfound54.src="../images/pixelart/emptyCard.png";
-    cardfound55.src=cardImages[0];
-}
-function addfoundation6Cards(){
-    let cardfound61 = document.getElementById("card-foundation-6-1");
-    let cardfound62 = document.getElementById("card-foundation-6-2");
-    let cardfound63 = document.getElementById("card-foundation-6-3");
-    let cardfound64 = document.getElementById("card-foundation-6-4");
-    let cardfound65 = document.getElementById("card-foundation-6-5");
-    let cardfound66 = document.getElementById("card-foundation-6-6");
-
-    
-    let cardImages = getCardImg(foundation6);
-    
-    
-    cardfound61.src = "../images/pixelart/emptyCard.png";
-    cardfound62.src="../images/pixelart/emptyCard.png";
-    cardfound63.src="../images/pixelart/emptyCard.png";
-    cardfound64.src="../images/pixelart/emptyCard.png";
-    cardfound65.src="../images/pixelart/emptyCard.png";
-    cardfound66.src=cardImages[0];
+    cardtableau41.src = "../images/pixelart/emptyCard.png";
+    cardtableau42.src="../images/pixelart/emptyCard.png";
+    cardtableau43.src="../images/pixelart/emptyCard.png";
+    cardtableau44.src=cardImages[0];
 
 }
-function addfoundation7Cards(){
-    let cardfound71 = document.getElementById("card-foundation-7-1");
-    let cardfound72 = document.getElementById("card-foundation-7-2");
-    let cardfound73 = document.getElementById("card-foundation-7-3");
-    let cardfound74 = document.getElementById("card-foundation-7-4");
-    let cardfound75 = document.getElementById("card-foundation-7-5");
-    let cardfound76 = document.getElementById("card-foundation-7-6");
-    let cardfound77 = document.getElementById("card-foundation-7-7");
+function addtableau5Cards(){
+    let cardtableau51 = document.getElementById("card-tableau-5-1");
+    let cardtableau52 = document.getElementById("card-tableau-5-2");
+    let cardtableau53 = document.getElementById("card-tableau-5-3");
+    let cardtableau54 = document.getElementById("card-tableau-5-4");
+    let cardtableau55 = document.getElementById("card-tableau-5-5");
 
     
-    let cardImages = getCardImg(foundation7);
+    let cardImages = getCardImgArr(tableau5);
     
     
-    cardfound71.src = "../images/pixelart/emptyCard.png";
-    cardfound72.src="../images/pixelart/emptyCard.png";
-    cardfound73.src="../images/pixelart/emptyCard.png";
-    cardfound74.src="../images/pixelart/emptyCard.png";
-    cardfound75.src="../images/pixelart/emptyCard.png";
-    cardfound76.src="../images/pixelart/emptyCard.png";
-    cardfound77.src=cardImages[0];
+    cardtableau51.src = "../images/pixelart/emptyCard.png";
+    cardtableau52.src="../images/pixelart/emptyCard.png";
+    cardtableau53.src="../images/pixelart/emptyCard.png";
+    cardtableau54.src="../images/pixelart/emptyCard.png";
+    cardtableau55.src=cardImages[0];
+}
+function addtableau6Cards(){
+    let cardtableau61 = document.getElementById("card-tableau-6-1");
+    let cardtableau62 = document.getElementById("card-tableau-6-2");
+    let cardtableau63 = document.getElementById("card-tableau-6-3");
+    let cardtableau64 = document.getElementById("card-tableau-6-4");
+    let cardtableau65 = document.getElementById("card-tableau-6-5");
+    let cardtableau66 = document.getElementById("card-tableau-6-6");
+
+    
+    let cardImages = getCardImgArr(tableau6);
+    
+    
+    cardtableau61.src = "../images/pixelart/emptyCard.png";
+    cardtableau62.src="../images/pixelart/emptyCard.png";
+    cardtableau63.src="../images/pixelart/emptyCard.png";
+    cardtableau64.src="../images/pixelart/emptyCard.png";
+    cardtableau65.src="../images/pixelart/emptyCard.png";
+    cardtableau66.src=cardImages[0];
+
+}
+function addtableau7Cards(){
+    let cardtableau71 = document.getElementById("card-tableau-7-1");
+    let cardtableau72 = document.getElementById("card-tableau-7-2");
+    let cardtableau73 = document.getElementById("card-tableau-7-3");
+    let cardtableau74 = document.getElementById("card-tableau-7-4");
+    let cardtableau75 = document.getElementById("card-tableau-7-5");
+    let cardtableau76 = document.getElementById("card-tableau-7-6");
+    let cardtableau77 = document.getElementById("card-tableau-7-7");
+
+    
+    let cardImages = getCardImgArr(tableau7);
+    
+    
+    cardtableau71.src = "../images/pixelart/emptyCard.png";
+    cardtableau72.src="../images/pixelart/emptyCard.png";
+    cardtableau73.src="../images/pixelart/emptyCard.png";
+    cardtableau74.src="../images/pixelart/emptyCard.png";
+    cardtableau75.src="../images/pixelart/emptyCard.png";
+    cardtableau76.src="../images/pixelart/emptyCard.png";
+    cardtableau77.src=cardImages[0];
 
 }
 
 
 document.addEventListener("DOMContentLoaded", function() {
-   addfoundationcards();
+    addtableaucards();    
+});
 
+document.getElementById("card-stock1").addEventListener("click",function(){
+        // if (stockCards.length==0){
+        //     alert("no more cards left in stock pile");
+        //     return;   
+        // }
+        
+        let stockcard2_card=getCardImgArr(stockCards);
+        
+        document.getElementById("card-stock2_img").src=stockcard2_card[0];
+        stockCards2.push(stockCards[0]);
+        stockCards.shift();
+    });
+
+// method to add cards from stock
+document.getElementById("card-stock2").addEventListener("click",function(){
+    let currstockcard=stockCards2[stockCards2.length-1];
+// if current card in stock2 pile is an ace
+    if (currstockcard[1]==="A"){
+        // retreives image of ace card in stock pile
+        let cardimg =getCardImg(currstockcard);
+        // finds foundation pile that is empty
+        
+        for (let i = 0; i < foundationpiles.length; i++) {
+            if (foundationState[i] === null) {
+                foundationState[i] = currstockcard;
+                foundationpiles[i].src = cardimg;
+                break;
+            }
+}
+ 
+     }
 });

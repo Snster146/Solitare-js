@@ -3,14 +3,15 @@ import{ SelectRandomCard ,Select_i_RandomCards,visitedCards} from "./Random.js";
 
 let stockCards=[];
 
-function selectfoundationCards(){
+// function which returns an 2d array containing cards drawn for each tableau pile there are 7 
+function selectTableauCards(){
      return [Select_i_RandomCards(Allcard,1),Select_i_RandomCards(Allcard,2),
          Select_i_RandomCards(Allcard,3),Select_i_RandomCards(Allcard,4),
          Select_i_RandomCards(Allcard,5),Select_i_RandomCards(Allcard,6),
          Select_i_RandomCards(Allcard,7)]
  }
 
-
+// function returns an array of all card names for example "H2"
 function getAllCardKeys(){
     let allCardKeys =[] 
     for (let i=0;i<Allcard.length;i++){
@@ -21,7 +22,7 @@ function getAllCardKeys(){
     }
     return allCardKeys;
 }
-
+// function to append all cards that are'nt visited to an array stockCards
 function selectStockCards(){
     let allCardKeys=getAllCardKeys();
 
@@ -33,16 +34,16 @@ function selectStockCards(){
      }
 }
 
-let selectedCards=selectfoundationCards();
+let selectedCards=selectTableauCards();
 
-let foundation1=selectedCards[0];
-let foundation2=selectedCards[1];
-let foundation3=selectedCards[2];
-let foundation4=selectedCards[3];
-let foundation5=selectedCards[4];
-let foundation6=selectedCards[5];
-let foundation7=selectedCards[6];
+let tableau1=selectedCards[0];
+let tableau2=selectedCards[1];
+let tableau3=selectedCards[2];
+let tableau4=selectedCards[3];
+let tableau5=selectedCards[4];
+let tableau6=selectedCards[5];
+let tableau7=selectedCards[6];
 
 selectStockCards();
 
-export {foundation1,foundation2,foundation3,foundation4,foundation5,foundation6,foundation7,stockCards};
+export {tableau1,tableau2,tableau3,tableau4,tableau5,tableau6,tableau7,stockCards};

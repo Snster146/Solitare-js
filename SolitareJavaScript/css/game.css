@@ -39,6 +39,7 @@
 
 }
 
+
 .foundation-area {
     display: flex;
     gap: 20px;
@@ -72,6 +73,7 @@
 }
 
 .card-another{
+    border: solid gold 5px;
     border-radius: 20px;
     height: inherit;
     margin-top:-100% ;
