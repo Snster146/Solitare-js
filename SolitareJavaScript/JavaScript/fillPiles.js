@@ -44,3 +44,5 @@ let foundation6=selectedCards[5];
 let foundation7=selectedCards[6];
 
 selectStockCards();
+
+export {foundation1,foundation2,foundation3,foundation4,foundation5,foundation6,foundation7,stockCards};
