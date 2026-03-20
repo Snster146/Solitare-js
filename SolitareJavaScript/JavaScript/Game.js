@@ -6,26 +6,33 @@ import { addtableau1Cards,addtableau2Cards,addtableau3Cards,addtableau4Cards,add
     addtableaucards,getCardImg,getCardImgArr} from "./addTableu.js";
 
 var stockCards2=[]
+// foundation arrays 
 var foundationpiles=[document.getElementById("foundation-1"),document.getElementById("foundation-2")
     ,document.getElementById("foundation-3"),document.getElementById("foundation-4")]
-var foundationState=[null,null,null,null];
+var foundationState=[[null],[null],[null],[null]];
+
+
 
 document.addEventListener("DOMContentLoaded", function() {
     addtableaucards();    
 });
 
-document.getElementById("card-stock1").addEventListener("click",function(){
-        // if (stockCards.length==0){
-        //     alert("no more cards left in stock pile");
-        //     return;   
-        // }
-        
-        let stockcard2_card=getCardImgArr(stockCards);
-        
-        document.getElementById("card-stock2_img").src=stockcard2_card[0];
-        stockCards2.push(stockCards[0]);
-        stockCards.shift();
-    });
+document.getElementById("card-stock1").addEventListener("click", function () {
+
+    if (stockCards.length === 0) {
+        stockCards.push(...stockCards2.reverse());
+        stockCards2.length = 0;
+    }
+
+    let cardImg = getCardImg(stockCards[0]);
+
+    document.getElementById("card-stock2_img").src = cardImg;
+
+    stockCards2.push(stockCards[0]);
+    stockCards.shift();
+
+    document.getElementById("debug-label").innerHTML = stockCards;
+});
 
 // method to add cards from stock
 document.getElementById("card-stock2").addEventListener("click",function(){
@@ -37,9 +44,12 @@ document.getElementById("card-stock2").addEventListener("click",function(){
         // finds foundation pile that is empty
         
         for (let i = 0; i < foundationpiles.length; i++) {
-            if (foundationState[i] === null) {
-                foundationState[i] = currstockcard;
+            if (foundationState[i][0] === null) {
+                foundationState[i][0] = currstockcard;
                 foundationpiles[i].src = cardimg;
+                stockCards2.pop();
+                let cardImg = getCardImg(stockCards[stockCards2.indexOf(currstockcard)]);
+                document.getElementById("card-stock2_img").src=cardImg;
                 break;
             }
 }
