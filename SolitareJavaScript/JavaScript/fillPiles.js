@@ -46,4 +46,5 @@ let tableau7=selectedCards[6];
 
 selectStockCards();
 
-export {tableau1,tableau2,tableau3,tableau4,tableau5,tableau6,tableau7,stockCards};
+let alltableu=[tableau1,tableau2,tableau3,tableau4,tableau5,tableau6,tableau7];
+export {tableau1,tableau2,tableau3,tableau4,tableau5,tableau6,tableau7,stockCards,alltableu};
