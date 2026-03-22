@@ -43,7 +43,7 @@ var ClubCards= new Map([
     ["CA","../images/pixelart/ace_clubs.png"],
     ["CJ","../images/pixelart/J_clubs.png"],
     ["CK","../images/pixelart/K_clubs.png"],
-    ["CQ","../images/pixelart/Q_club.png"],
+    ["CQ","../images/pixelart/Q_clubs.png"],
 ]);
 
 var DiamondCards= new Map([
@@ -62,7 +62,42 @@ var DiamondCards= new Map([
     ["DQ","../images/pixelart/Q_diamond.png"],
 ]);
 
-
+var tableauCards=[  //tableau 1s html img elements
+                    [document.getElementById("card-tableau-1-1")],
+                    //tableau 2s html img elements
+                    [document.getElementById("card-tableau-2-1"),
+                    document.getElementById("card-tableau-2-2")],
+                    //tableau 3s html img elements
+                    [document.getElementById("card-tableau-3-1"),
+                    document.getElementById("card-tableau-3-2"),
+                    document.getElementById("card-tableau-3-3")],
+                    //tableau 4s html img elements
+                    [document.getElementById("card-tableau-4-1"),
+                    document.getElementById("card-tableau-4-2"),
+                    document.getElementById("card-tableau-4-3"),
+                    document.getElementById("card-tableau-4-4")],
+                    //tableau 5s html img elements
+                    [document.getElementById("card-tableau-5-1"),
+                    document.getElementById("card-tableau-5-2"),
+                    document.getElementById("card-tableau-5-3"),
+                    document.getElementById("card-tableau-5-4"),
+                    document.getElementById("card-tableau-5-5")],
+                    //tableau 6s html img elements
+                    [document.getElementById("card-tableau-6-1"),
+                    document.getElementById("card-tableau-6-2"),
+                    document.getElementById("card-tableau-6-3"),
+                    document.getElementById("card-tableau-6-4"),
+                    document.getElementById("card-tableau-6-5"),
+                    document.getElementById("card-tableau-6-6")],
+                    //tableau 7s html img elements
+                    [document.getElementById("card-tableau-7-1"),
+                    document.getElementById("card-tableau-7-2"),
+                    document.getElementById("card-tableau-7-3"),
+                    document.getElementById("card-tableau-7-4"),
+                    document.getElementById("card-tableau-7-5"),
+                    document.getElementById("card-tableau-7-6"),
+                    document.getElementById("card-tableau-7-7")]
+                ];
 
 var Allcard=[HeartCards,SpadeCards,ClubCards,DiamondCards]
-export { HeartCards, SpadeCards, ClubCards, DiamondCards ,Allcard};
+export { HeartCards, SpadeCards, ClubCards, DiamondCards ,Allcard,tableauCards};
