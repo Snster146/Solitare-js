@@ -19,7 +19,7 @@ var tableauPiles=[document.getElementById("tableau-1"),document.getElementById("
 var tableauDisplayedCards=[tableau1[0],tableau2[0],tableau3[0],
                         tableau4[0],tableau5[0],tableau6[0],tableau7[0]];
 
-var cardOrder=["A","1","2","3","4","5","6","7","8","9","J","Q","K"];
+var cardOrder=["A","1","2","3","4","5","6","7","8","9","10","J","Q","K"];
 
 document.addEventListener("DOMContentLoaded", function() {
     addtableaucards();    
@@ -106,8 +106,8 @@ function addCardToTableu(card1,card2,fromIndex,toIndex){
     let card1Set=card1[0];
     let card2Set=card2[0];
 
-    let card1Num=card1[1];
-    let card2Num=card2[1];
+    let card1Num=card1.slice(1);
+    let card2Num=card2.slice(1);
     
     let isRed1 = (card1Set === "H" || card1Set === "D");
     let isRed2 = (card2Set === "H" || card2Set === "D");
