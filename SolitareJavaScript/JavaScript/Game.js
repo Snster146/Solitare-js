@@ -139,13 +139,14 @@ function addCardToTableu(card1,card2,fromIndex,toIndex){
 
 // loops through every tableau pile
 for (let i = 0; i < tableauCards.length; i++) {
-    // add event listener for if a display card in a tableu pile is pressed
+    // add event listener for if a display card in a tableu pile is pressed, this is on the array of html elements
     tableauCards[i][tableauCards[i].length - 1].addEventListener("click", function () {
 
         let selectedCard = tableauDisplayedCards[i];
         if (selectedCard[1]=="A"){
-            addAceToFoundationPile(selectedCard);
             removeSourcePile(i);
+            addAceToFoundationPile(selectedCard);
+            
         }
 
         for (let j = 0; j < tableauCards.length; j++) {
