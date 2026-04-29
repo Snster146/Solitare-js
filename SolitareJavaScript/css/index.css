@@ -68,3 +68,37 @@ footer{
     top: 95%; 
 }
 
+/* Responsive design */
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+
+    .header {
+        width: 90%;
+        font-size: 2em;
+        padding: 2%;
+    }
+
+    #navbar-header, #img-header {
+        font-size: 1.5em;
+        margin-top: 2%;
+    }
+
+    footer {
+        position: relative;
+        top: auto;
+        margin-top: 20px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .header {
+        font-size: 3em;
+    }
+
+    #navbar-header, #img-header {
+        font-size: 2em;
+    }
+}
+

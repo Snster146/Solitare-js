@@ -48,3 +48,55 @@
 .instrucbtn:hover{
     opacity: 1;
 }
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .header {
+        font-size: 14px;
+    }
+
+    #header-title {
+        font-size: 2em;
+    }
+
+    #instructions-header h1 {
+        font-size: 1.5em;
+    }
+
+    #instructions-p {
+        font-size: 1em;
+    }
+
+    .instrucbtn {
+        font-size: 2em;
+        height: 80%;
+    }
+
+    #btn-wrapper {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #btn-wrapper a {
+        margin: 2%;
+        width: 80%;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    #header-title {
+        font-size: 3em;
+    }
+
+    #instructions-header h1 {
+        font-size: 2em;
+    }
+
+    #instructions-p {
+        font-size: 1.5em;
+    }
+
+    .instrucbtn {
+        font-size: 3em;
+    }
+}
