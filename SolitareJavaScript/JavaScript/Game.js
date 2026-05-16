@@ -1,10 +1,20 @@
-//import necessary maps and arrays
+/**
+ * Game.js
+ *
+ * Contains the main Solitaire gameplay logic, including tableau moves,
+ * stock/waste behavior, and foundation pile updates.
+ */
+// import necessary maps and arrays
 import { HeartCards, SpadeCards, ClubCards, DiamondCards,Allcard ,tableauCards} from "./CardMaps.js";
 import{ SelectRandomCard,visitedCards} from "./Random.js";
 import {tableau1,tableau2,tableau3,tableau4,tableau5,tableau6,tableau7, stockCards,alltableu } from "./fillPiles.js";
 import { addtableau1Cards,addtableau2Cards,addtableau3Cards,addtableau4Cards,addtableau5Cards,addtableau6Cards,addtableau7Cards,
     addtableaucards,getCardImg,getCardImgArr} from "./addTableu.js";
 
+/**
+ * Cards that have moved from stock into the waste area.
+ * @type {string[]}
+ */
 var stockCards2=[]
 // foundation arrays 
 var foundationpiles=[document.getElementById("foundation-1"),document.getElementById("foundation-2")
@@ -43,6 +53,10 @@ document.getElementById("card-stock1").addEventListener("click", function () {
 
 });
 
+/**
+ * Move an Ace from the waste pile into the first available foundation pile.
+ * @param {string} card - A card code such as "HA".
+ */
 function addAceToFoundationPile(card){
     let cardimg =getCardImg(card);
         // finds foundation pile that is empty

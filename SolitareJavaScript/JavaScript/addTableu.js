@@ -1,5 +1,17 @@
+/**
+ * addTableu.js
+ *
+ * Provides helper functions for mapping card codes to image URIs and
+ * populating the tableau card image slots on the Solitaire board.
+ */
 import { HeartCards, SpadeCards, ClubCards, DiamondCards } from "./CardMaps.js";
 import { tableau1, tableau2, tableau3, tableau4, tableau5, tableau6, tableau7 } from "./fillPiles.js";
+
+/**
+ * Convert an array of card codes into an array of matching image URLs.
+ * @param {string[]} cardArr - Array of cards such as ["H2", "S10", "CQ"].
+ * @returns {string[]} List of image source paths for the provided cards.
+ */
 function getCardImgArr(cardArr){
     let cardlImages=[]
     for (let i =0;i<cardArr.length;i++){
@@ -22,6 +34,11 @@ function getCardImgArr(cardArr){
     return cardlImages;
 }
 
+/**
+ * Convert a single card code into the matching image URL.
+ * @param {string} cardName - A card code such as "H2" or "DQ".
+ * @returns {string|undefined} Image path for the card, or undefined if not found.
+ */
 function getCardImg(cardName){
     switch(cardName[0]){
             // if of Heart set 
@@ -40,6 +57,10 @@ function getCardImg(cardName){
         }
 }
 
+/**
+ * Render the initial visible card for each tableau column.
+ * This function invokes each tableau-specific setup helper.
+ */
 function addtableaucards(){
     addtableau1Cards();
     addtableau2Cards();

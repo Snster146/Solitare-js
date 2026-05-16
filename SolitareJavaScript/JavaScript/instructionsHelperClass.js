@@ -1,3 +1,8 @@
+/**
+ * instructionsHelperClass.js
+ *
+ * Implements a small instruction state manager for cycling through message content.
+ */
 export class Instructions {
     constructor({ map, instructiontitles, counter }) {
         this.instructionsMap = map;

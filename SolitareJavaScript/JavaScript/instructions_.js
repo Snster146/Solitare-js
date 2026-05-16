@@ -1,3 +1,8 @@
+/**
+ * instructions_.js
+ *
+ * Supplies the user-facing game instruction content for the instructions page.
+ */
 import { Instructions, nextInstruction } from "./instructionsHelperClass.js";
 
 const instructionObject = new Instructions({

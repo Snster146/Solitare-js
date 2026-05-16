@@ -1,9 +1,22 @@
+/**
+ * fillPiles.js
+ *
+ * Generates the initial tableau and stock card sets for the Solitaire game.
+ */
 import { HeartCards, SpadeCards, ClubCards, DiamondCards,Allcard } from "./CardMaps.js";
 import{ SelectRandomCard ,Select_i_RandomCards,visitedCards} from "./Random.js";
 
+/**
+ * Cards that remain in the stock pile after tableau cards are dealt.
+ * @type {string[]}
+ */
 let stockCards=[];
 
-// function which returns an 2d array containing cards drawn for each tableau pile there are 7 
+/**
+ * Build the initial tableau layout by selecting an increasing number of cards
+ * for each of the 7 tableau piles.
+ * @returns {string[][]} Array of 7 tableau piles, each a list of selected card codes.
+ */
 function selectTableauCards(){
      return [Select_i_RandomCards(Allcard,1),Select_i_RandomCards(Allcard,2),
          Select_i_RandomCards(Allcard,3),Select_i_RandomCards(Allcard,4),

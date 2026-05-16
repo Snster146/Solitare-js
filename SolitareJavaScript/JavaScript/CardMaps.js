@@ -1,3 +1,8 @@
+/**
+ * CardMaps.js
+ *
+ * Defines all card image resources and provides shared board element references.
+ */
 var HeartCards= new Map([
     ["H2","../images/pixelart/2_hearts.png"],
     ["H3","../images/pixelart/3_hearts.png"],

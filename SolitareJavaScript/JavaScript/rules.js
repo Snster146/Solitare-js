@@ -1,3 +1,8 @@
+/**
+ * rules.js
+ *
+ * Supplies the Solitaire rule descriptions for the rules information page.
+ */
 import { Instructions, nextInstruction } from "./instructionsHelperClass.js";
 
 const instructionObject = new Instructions({
