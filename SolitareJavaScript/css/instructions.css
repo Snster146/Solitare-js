@@ -51,6 +51,7 @@
 
 /* Responsive design */
 @media (max-width: 768px) {
+    
     .header {
         font-size: 14px;
     }
@@ -85,18 +86,18 @@
 
 @media (min-width: 769px) and (max-width: 1024px) {
     #header-title {
-        font-size: 3em;
+        font-size: 4em;
     }
 
     #instructions-header h1 {
-        font-size: 2em;
+        font-size: 3em;
     }
 
     #instructions-p {
-        font-size: 1.5em;
+        font-size: 2em;
     }
 
     .instrucbtn {
-        font-size: 3em;
+        font-size: 4em;
     }
 }

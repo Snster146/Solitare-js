@@ -93,12 +93,19 @@ footer{
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
+    /* .wrapper{
+        min-height: 100vh;
+    } */
+
     .header {
-        font-size: 3em;
+        font-size: 4em;
+        min-width: 90%;
+        min-height: 20vh; 
+        justify-content: center;
+        align-items: center;       
     }
 
     #navbar-header, #img-header {
-        font-size: 2em;
+        font-size: 3em;
     }
 }
-
