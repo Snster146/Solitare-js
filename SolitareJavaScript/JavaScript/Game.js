@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("debug-label").innerHTML = tableauDisplayedCards;
 
 });
-
+// logic for the drawing cards from the stock pile
 document.getElementById("card-stock1").addEventListener("click", function () {
 
     if (stockCards.length === 0) {
@@ -82,13 +82,29 @@ document.getElementById("card-stock2").addEventListener("click",function(){
         addAceToFoundationPile(currstockcard);
  
      }
+     else{
+        // loop through every card in tableu pile, see if card can be added , add card
+        for (let i=0; i<tableauDisplayedCards.length;i++){
+            // current display card from tableau 
+            let targetCard=tableauDisplayedCards[i];
+            // document.getElementById("debug-label").innerHTML=i;
+            addCardToTableuFromStock(currstockcard,targetCard,i)
+        }
+    }
 });
-
+// remove the last card element from the source tableau pile after moving it
 function removeSourcePile(fromIndex){
     let sourcePile = document.getElementById(`tableau-${fromIndex + 1}`);
     sourcePile.removeChild(sourcePile.lastElementChild);
 
 }
+
+/**
+ * Wraps a moved card image in a container and appends it to the target tableau pile.
+ * @param {HTMLElement} targetPile - The destination tableau pile element.
+ * @param {HTMLImageElement} newImg - The image element for the moved card.
+ */
+// needs to be modified to add every card in the pile 
 function addCardToTarget(targetPile,newImg){
     let wrapper = document.createElement("div");
     wrapper.classList.add("card-another");
@@ -111,9 +127,41 @@ function displayNextCardInTableu(fromIndex){
     toIndex is the index of the tableu pile of the display card we are currently on in the iteration
     
     This function checks if the selected card can be added to the pile of the display card in the current iteration of all tableu piles
-    If it can then the card will be added to that tableu pile and the next card in the pile from where the card moved will be the display card of the 
+    If it can, the card will be added to that tableu pile and the next card in the pile from where the card moved will be the display card of the 
     tableu pile that the moved card was apart of   
 */
+
+function addCardToTableuFromStock(card1,card2,toIndex){
+    let card1Set=card1[0];
+    let card2Set=card2[0];
+
+    let card1Num=card1.slice(1);
+    let card2Num=card2.slice(1);
+
+    let isRed1 = (card1Set === "H" || card1Set === "D");
+    let isRed2 = (card2Set === "H" || card2Set === "D");
+    
+    // document.getElementById("debug-label").innerHTML=card2Num;
+    // document.getElementById("debug-label").innerHTML=card1;
+
+    if (isRed1 !== isRed2) {
+
+        // // check descending order
+        if (cardOrder.indexOf(card2Num) - cardOrder.indexOf(card1Num) === 1) {
+            let cardimg =getCardImg(card1);
+            document.getElementById("debug-label").innerHTML=cardimg;
+
+            let targetPile = document.getElementById(`tableau-${toIndex + 1}`);
+            let newImg = document.createElement("img");
+            newImg.src = cardimg;
+            addCardToTarget(targetPile,newImg);
+        }
+        
+}
+
+
+
+}
 
 function addCardToTableu(card1,card2,fromIndex,toIndex){
     
