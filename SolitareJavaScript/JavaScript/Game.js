@@ -88,7 +88,9 @@ document.getElementById("card-stock2").addEventListener("click",function(){
             // current display card from tableau 
             let targetCard=tableauDisplayedCards[i];
             // document.getElementById("debug-label").innerHTML=i;
-            addCardToTableuFromStock(currstockcard,targetCard,i)
+            if(addCardToTableuFromStock(currstockcard,targetCard,i)===true){
+                stockCards2.pop();
+            }
         }
     }
 });
@@ -155,6 +157,7 @@ function addCardToTableuFromStock(card1,card2,toIndex){
             let newImg = document.createElement("img");
             newImg.src = cardimg;
             addCardToTarget(targetPile,newImg);
+            return true;
         }
         
 }
