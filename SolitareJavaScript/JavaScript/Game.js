@@ -132,6 +132,14 @@ document.getElementById("card-stock2").addEventListener("click",function(){
                 document.getElementById("card-stock2_img").src=getCardImg(stockCards[0]);
 
             }
+            else{
+                if(addStockToFoundation(currstockcard)===true){
+                    stockCards2.pop();
+                    document.getElementById("card-stock2_img").src=getCardImg(stockCards[0]);
+
+                };
+                
+            }
         }
     }
 });
@@ -262,6 +270,32 @@ function addCardToTableu(card1,card2,fromIndex,toIndex){
         }
 }
 }
+
+function addStockToFoundation(card){
+    let card1Set=card[0];
+    let card1Num = card.slice(1);
+    for (let i=0;i<foundationState.length;i++){
+
+        let currFoundationCard=foundationState[i][0]
+        if (currFoundationCard===null){continue;}
+        let currFoundationSet = currFoundationCard[0];
+        let currFoundationNum = currFoundationCard.slice(1);
+
+        if ((card1Set===currFoundationSet) && (cardOrder.indexOf(card1Num) - cardOrder.indexOf(currFoundationNum) === 1)){
+            // logic to add tableau card to foundation pile
+            document.getElementById("debug-label").innerHTML="can add"
+            let cardimg =getCardImg(card);
+            let newImg = document.createElement("img");
+            newImg.src = cardimg;
+            
+            foundationState[i][0]=card;
+            foundationpiles[i].src=cardimg;
+            return true;
+        }
+    }
+    }
+
+
 
 function addCardToFoundation(card,fromIndex){
     // document.getElementById("debug-label").innerHTML=card;
