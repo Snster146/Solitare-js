@@ -19,7 +19,7 @@ var stockCards2=[]
 // foundation arrays 
 var foundationpiles=[document.getElementById("foundation-1"),document.getElementById("foundation-2")
     ,document.getElementById("foundation-3"),document.getElementById("foundation-4")]
-var foundationState=[null,null,null,null];
+var foundationState=[[null],[null],[null],[null]];
 
 var tableauPiles=[document.getElementById("tableau-1"),document.getElementById("tableau-2"),document.getElementById("tableau-3"),
     document.getElementById("tableau-4"),document.getElementById("tableau-5"),document.getElementById("tableau-6"),document.getElementById("tableau-7")
@@ -33,7 +33,7 @@ var tableauDisplayedCards;
 var tableauPileCards=[[tableau1[0]],[tableau2[0]],[tableau3[0]],[tableau4[0]],[tableau5[0]],[tableau6[0]],[tableau7[0]]]
 
 
-var cardOrder=["A","1","2","3","4","5","6","7","8","9","10","J","Q","K"];
+var cardOrder=["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
 
 document.addEventListener("DOMContentLoaded", function() {
     addtableaucards();    
@@ -73,8 +73,8 @@ function addAceToFoundationPile(card){
         // finds foundation pile that is empty
         
         for (let i = 0; i < foundationpiles.length; i++) {
-            if (foundationState[i] === null) {
-                foundationState[i] = card;
+            if (foundationState[i][0] === null) {
+                foundationState[i][0] = card;
                 foundationpiles[i].src = cardimg;
                 stockCards2.pop();
                 document.getElementById("debug-label").innerHTML=foundationState;
@@ -94,8 +94,8 @@ function addAceFromTableuToFoundatoin(card,fromIndex){
 
     // document.getElementById("debug-label").innerHTML=alltableu[fromIndex];
     for (let i = 0; i < foundationpiles.length; i++) {
-            if (foundationState[i] === null) {
-                foundationState[i] = card;
+            if (foundationState[i][0] === null) {
+                foundationState[i][0] = card;
                 foundationpiles[i].src = cardimg;
                 
                 removeSourcePile(fromIndex);
@@ -221,12 +221,16 @@ function addCardToTableuFromStock(card1,card2,toIndex){
 
 function addCardToTableu(card1,card2,fromIndex,toIndex){
     
+
+
     let card1Set=card1[0];
     let card2Set=card2[0];
 
     let card1Num=card1.slice(1);
     let card2Num=card2.slice(1);
     
+    if (card1Num=="A"){return false;}
+
     let isRed1 = (card1Set === "H" || card1Set === "D");
     let isRed2 = (card2Set === "H" || card2Set === "D");
 
@@ -260,20 +264,25 @@ function addCardToTableu(card1,card2,fromIndex,toIndex){
 }
 
 function addCardToFoundation(card,fromIndex){
-    document.getElementById("debug-label").innerHTML="here";
+    // document.getElementById("debug-label").innerHTML=card;
     let card1Set=card[0];
     let card1Num = card.slice(1);
-    document.getElementById("debug-label").innerHTML=card1;
     for (let i=0;i<foundationState.length;i++){
-        let currFoundationCard=foundationState[i]
-        if (foundationCard === null) {
-            continue;
-        }
-        let currFoundationSet = foundationCard[0];
-        let currFoundationNum = foundationCard.slice(1);
+        let currFoundationCard=foundationState[i][0]
+        if (currFoundationCard===null){continue;}
+        let currFoundationSet = currFoundationCard[0];
+        let currFoundationNum = currFoundationCard.slice(1);
+        // document.getElementById("debug-label").innerHTML=currFoundationSet;
         if ((card1Set===currFoundationSet) && (cardOrder.indexOf(card1Num) - cardOrder.indexOf(currFoundationNum) === 1)){
             // logic to add tableau card to foundation pile
-            document.getElementById("debug-label").innerHTML='can add tableau card to pile ';
+            let movedCardDiv=tableauCards[fromIndex].pop();
+            alltableu[fromIndex].shift();
+            let cardImg=getCardImg(card);
+            foundationState[i][0]=card;
+            foundationpiles[i].src=cardImg;
+            document.getElementById("debug-label").innerHTML=foundationState;
+            removeSourcePile(fromIndex);
+            displayNextCardInTableu(fromIndex);
         }
     }
 
@@ -282,25 +291,32 @@ function addCardToFoundation(card,fromIndex){
 // loops through every tableau pile
 function initializeTableauCardListeners(){
     for (let i = 0; i < tableauCards.length; i++) {
-    // add event listener for if a display card in a tableu pile is pressed, this is on the array of html elements
-    tableauCards[i][tableauCards[i].length - 1].addEventListener("click", function () {
 
-        let selectedCard = tableauDisplayedCards[i];
-        if (selectedCard[1]=="A"){
-            addAceFromTableuToFoundatoin(selectedCard,i);
-        }
+        // add event listener for if a display card in a tableu pile is pressed
+        tableauCards[i][tableauCards[i].length - 1]
+            .addEventListener("click", function () {
 
-        for (let j = 0; j < tableauCards.length; j++) {
-// checks that the selected card and the card on the iteration of all display cards in tableu pile arent the same 
-            if (i !== j) {
-                let targetCard = tableauDisplayedCards[j];
+            let selectedCard = tableauDisplayedCards[i];
 
-                if(addCardToTableu(selectedCard, targetCard, i, j)!=true){
-                    addCardToFoundation(selectedCard,i);
+            if (selectedCard[1] == "A") {
+                addAceFromTableuToFoundatoin(selectedCard, i);
+            }
+
+            for (let j = 0; j < tableauCards.length; j++) {
+
+                // checks that selected and target are not same pile
+                if (i !== j) {
+
+                    let targetCard = tableauDisplayedCards[j];
+
+                    let canAddToTableau = addCardToTableu(selectedCard,targetCard,i,j);
+
+                    if (canAddToTableau != true) {
+                        addCardToFoundation(selectedCard, i);
+                    }
                 }
             }
-        }
-    });
-}
+        });
+    }
 }
 initializeTableauCardListeners();
