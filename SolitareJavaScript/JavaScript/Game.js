@@ -148,7 +148,7 @@ function RevealNextTableauCard(fromIndex,fromTableuNext){
 
     tableauPileCards[fromIndex].push(fromTableuNext);
 
-    revealedCard.addEventListener("click",initializeTableauCardListeners());
+    revealedCard.addEventListener("click",initializeTableauListeners());
 
 }
 /*This method takes inputs card1, card2 , fromIndex and toIndex
@@ -237,8 +237,12 @@ function addStockToFoundation(card){
     let card1Num = card.slice(1);
     for (let i=0;i<foundationState.length;i++){
 
-        let currFoundationCard=foundationState[i][0]
-        if (currFoundationCard===null){continue;}
+        let currFoundationCard = foundationState[i][foundationState[i].length - 1];
+        
+        if (currFoundationCard===null){
+            continue;
+        }
+        
         let currFoundationSet = currFoundationCard[0];
         let currFoundationNum = currFoundationCard.slice(1);
 
@@ -283,9 +287,48 @@ function addCardToFoundation(card,fromIndex){
 
 }
 
+function moveFoundationToTableau(fromFoundationIndex,toTableauIndex){
+
+    let foundationPile = foundationState[fromFoundationIndex];
+
+    if (foundationPile.length === 0){
+        return false;
+    }
+
+    let foundationCard = foundationPile[foundationPile.length - 1];
+
+    let tableauCard = tableauDisplayedCards[toTableauIndex];
+
+    if (!canMoveToTableu(foundationCard, tableauCard)){
+        return false;
+    }
+
+    foundationPile.pop();
+
+    addCardImgToTableu(foundationCard,toTableauIndex);
+
+    if (foundationPile.length === 0){
+
+        foundationpiles[fromFoundationIndex].src = "";
+
+    } 
+    else {
+
+        let nextTopCard =
+            foundationPile[foundationPile.length - 1];
+
+        foundationpiles[fromFoundationIndex].src =
+            getCardImg(nextTopCard);
+    }
+
+    return true;
+}
+
+
+
 
 // loops through every tableau pile
-function initializeTableauCardListeners(){
+function initializeTableauListeners(){
     for (let i = 0; i < tableauCards.length; i++) {
 
         // add event listener for if a display card in a tableu pile is pressed
@@ -318,6 +361,23 @@ function initializeTableauCardListeners(){
         });
     }
 }
+
+function initializeFoundationListeners(){
+    // do something
+    for (let i=0;i<foundationpiles.length;i++){
+        foundationpiles[i].addEventListener("click",function(){
+            for (let j=0;j<tableauDisplayedCards.length;j++){
+                let tableauCard=tableauDisplayedCards[j];
+                if (moveFoundationToTableau(i,j)===true){
+                    return;
+                }
+            }
+        });
+    }
+}
+
+
+
 
 document.getElementById("card-stock1").addEventListener("click", function () {
 
@@ -371,4 +431,5 @@ document.getElementById("card-stock2").addEventListener("click",function(){
     }
 });
 
-initializeTableauCardListeners();
+initializeTableauListeners();
+initializeFoundationListeners();
