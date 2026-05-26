@@ -204,7 +204,29 @@ function addCardToTableuFromStock(card1,card2,toIndex){
     let isRed1 = (card1Set === "H" || card1Set === "D");
     let isRed2 = (card2Set === "H" || card2Set === "D");
     
-   
+   if (card1Num==="K"){
+
+        for (let i=0;i<tableauPileCards.length;i++){
+
+            if (tableauPileCards[i].length==0){
+                
+                let cardimg =getCardImg(card1);
+
+                let targetPile = document.getElementById(`tableau-${toIndex + 1}`);
+                let newImg = document.createElement("img");
+                newImg.src = cardimg;
+            
+            // document.getElementById("debug-label")=tableauDisplayedCards;
+                addCardToTarget(targetPile,newImg);
+                tableauDisplayedCards[toIndex] = card1;
+                tableauPileCards[toIndex].push(card1);
+                document.getElementById("debug-label").innerHTML=tableauPileCards;
+            // tableauDisplayedCards[1]=card2;
+            // targetpile, toIndex, card2
+                return true;
+            }
+        }
+    }
 
     if (isRed1 !== isRed2) {
 
@@ -255,7 +277,9 @@ function addCardToTableu(card1,card2,fromIndex,toIndex){
                 
                 let movedCardDiv=tableauCards[fromIndex].pop();
                 
-                alltableu[fromIndex].shift();
+                // alltableu[fromIndex].shift();
+                tableauPileCards[fromIndex].pop();
+
                 
                 tableauCards[toIndex].push(movedCardDiv);
                 
@@ -272,6 +296,7 @@ function addCardToTableu(card1,card2,fromIndex,toIndex){
                 removeSourcePile(fromIndex);
 
                 displayNextCardInTableu(fromIndex);
+                Document.getElementById("debug-label").innerHTML=tableauPileCards;
             
                 return true;
             }
