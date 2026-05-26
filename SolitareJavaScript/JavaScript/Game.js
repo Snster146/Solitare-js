@@ -247,6 +247,37 @@ function addCardToTableu(card1,card2,fromIndex,toIndex){
     let isRed1 = (card1Set === "H" || card1Set === "D");
     let isRed2 = (card2Set === "H" || card2Set === "D");
 
+    if (card1Num==="K"){
+
+        for (let i=0;i<tableauPileCards.length;i++){
+
+            if (tableauPileCards[i].length==0){
+                
+                let movedCardDiv=tableauCards[fromIndex].pop();
+                
+                alltableu[fromIndex].shift();
+                
+                tableauCards[toIndex].push(movedCardDiv);
+                
+                let targetPile = document.getElementById(`tableau-${toIndex + 1}`);
+                let newImg = document.createElement("img");
+                
+                newImg.src = getCardImg(card1);
+                addCardToTarget(targetPile,newImg);
+                
+                tableauDisplayedCards[toIndex] = card1;
+
+                tableauPileCards[toIndex].push(card1);
+
+                removeSourcePile(fromIndex);
+
+                displayNextCardInTableu(fromIndex);
+            
+                return true;
+            }
+        }
+    }
+
     if (isRed1 !== isRed2) {
         // check descending order
         if (cardOrder.indexOf(card2Num) - cardOrder.indexOf(card1Num) === 1) {
