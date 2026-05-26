@@ -123,11 +123,13 @@ function addCardToTarget(targetPile,newImg){
     wrapper.classList.add("card-another");
     wrapper.appendChild(newImg);
     targetPile.appendChild(wrapper);
+    // newImg needs an id of tableupile-cardindexinpile and to be added to tableuCards
 }
 
 function displayNextCardInTableu(fromIndex){
-   if (alltableu[fromIndex].length===0){
-        tableauDisplayedCards[fromIndex]=null;
+    // sets the tableau pile to empty if the moved card was the last card in the tableau pile
+    if (alltableu[fromIndex].length===0){
+        tableauDisplayedCards[fromIndex]="";
         tableauPileCards[fromIndex]=[];
         return;
     }
@@ -143,7 +145,7 @@ function RevealNextTableauCard(fromIndex,fromTableuNext){
     let revealedCard= tableauCards[fromIndex][tableauCards[fromIndex].length-1]
     
     revealedCard.src=fromTableuNextImg;
-    
+
     tableauDisplayedCards[fromIndex]=fromTableuNext;
 
     tableauPileCards[fromIndex].push(fromTableuNext);
@@ -203,19 +205,26 @@ function addCardToTableu(card1,card2,fromIndex,toIndex){
     
             
             let movedCardDiv = tableauCards[fromIndex].pop();
+            tableauPileCards[fromIndex].pop();
+
 
             alltableu[fromIndex].shift();
             // tableauCards[fromIndex].pop();
-            tableauCards[toIndex].push(movedCardDiv);
+            // tableauCards[toIndex].push(movedCardDiv);
 
             addCardImgToTableu(card1,toIndex);
 
             removeSourcePile(fromIndex);
 
             displayNextCardInTableu(fromIndex);
+
+            // addCardImgToTableu(card1,toIndex);
             
             return true;
         }
+    else{
+        return false;
+    }
     }
 
 
@@ -224,6 +233,9 @@ function addCardImgToTableu(card,toIndex){
     let targetPile = document.getElementById(`tableau-${toIndex + 1}`);
     let newImg = document.createElement("img");
     newImg.src = getCardImg(card);
+    newImg.id=`card-tableau-${toIndex+1}-${tableauCards[toIndex].length+1}`
+    tableauCards[toIndex].push(newImg);
+    // newImg needs an id of tableupile-cardindexinpile and to be added to tableuCards
 
     addCardToTarget(targetPile,newImg);
     tableauDisplayedCards[toIndex] = card;
@@ -330,16 +342,21 @@ function moveFoundationToTableau(fromFoundationIndex,toTableauIndex){
 // loops through every tableau pile
 function initializeTableauListeners(){
     for (let i = 0; i < tableauCards.length; i++) {
-
         // add event listener for if a display card in a tableu pile is pressed
         tableauCards[i][tableauCards[i].length - 1]
-            .addEventListener("click", function () {
+        .addEventListener("click", function () {
 
+            
             let selectedCard = tableauDisplayedCards[i];
-
+            console.log(tableauDisplayedCards);
+            for (let i=0; i<tableauPileCards.length;i++){
+                console.log(tableauPileCards[i]);
+                console.log(tableauCards[i]);
+            }
             if (selectedCard[1] == "A") {
                 addAceFromTableuToFoundatoin(selectedCard, i);
             }
+
 
             for (let j = 0; j < tableauCards.length; j++) {
 
