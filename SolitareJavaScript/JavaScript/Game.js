@@ -150,7 +150,7 @@ function RevealNextTableauCard(fromIndex,fromTableuNext){
 
     tableauPileCards[fromIndex].push(fromTableuNext);
 
-    revealedCard.addEventListener("click",initializeTableauListeners());
+    // revealedCard.addEventListener("click",initializeTableauListeners());
 
 }
 /*This method takes inputs card1, card2 , fromIndex and toIndex
@@ -174,8 +174,7 @@ function addCardToTableuFromStock(card1,card2,toIndex){
         let cardimg =getCardImg(card1);
 
         addCardImgToTableu(card1,toIndex);
-
-
+        initializeTableauListeners();
         return true;
         
     }
@@ -219,7 +218,7 @@ function addCardToTableu(card1,card2,fromIndex,toIndex){
             displayNextCardInTableu(fromIndex);
 
             // addCardImgToTableu(card1,toIndex);
-            
+            initializeTableauListeners();
             return true;
         }
     else{
@@ -235,7 +234,6 @@ function addCardImgToTableu(card,toIndex){
     newImg.src = getCardImg(card);
     newImg.id=`card-tableau-${toIndex+1}-${tableauCards[toIndex].length+1}`
     tableauCards[toIndex].push(newImg);
-    // newImg needs an id of tableupile-cardindexinpile and to be added to tableuCards
 
     addCardToTarget(targetPile,newImg);
     tableauDisplayedCards[toIndex] = card;
