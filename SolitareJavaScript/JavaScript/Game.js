@@ -58,12 +58,12 @@ function addAceToFoundationPile(card){
         // finds foundation pile that is empty
         
         for (let i = 0; i < foundationpiles.length; i++) {
-            if (foundationState[i][0] === null) {
-                foundationState[i][0] = card;
-                foundationpiles[i].src = cardimg;
+            if(addToFoundation(i,card)){
                 stockCards2.pop();
                 break;
-            }
+           }
+        
+            
 }
 
 
@@ -77,23 +77,36 @@ function addAceFromTableuToFoundatoin(card,fromIndex){
 
     // document.getElementById("debug-label").innerHTML=alltableu[fromIndex];
     for (let i = 0; i < foundationpiles.length; i++) {
-            if (foundationState[i][0] === null) {
-                foundationState[i][0] = card;
-                foundationpiles[i].src = cardimg;
-
-                tableauPileCards[fromIndex].pop();                  
-                removeSourcePile(fromIndex);
-                displayNextCardInTableu(fromIndex);
+            
+            if (addToFoundation(i,card)===true){
+            
+                removeAndDisplayNext(fromIndex);
                 document.getElementById("debug-label").innerHTML=tableauPileCards;              
                 break;
             }
-    }
+        
+        }
 
 }
+function removeAndDisplayNext(fromIndex){
+    tableauPileCards[fromIndex].pop();                  
+    removeSourcePile(fromIndex);
+    displayNextCardInTableu(fromIndex);
+}
 
+function addToFoundation (foundationIndex,card){
+    if (foundationState[foundationIndex][0]===null){
+        foundationState[foundationIndex][0]=card;
 
-
-
+        let cardimg =getCardImg(card);
+        foundationpiles[foundationIndex].src=cardimg;
+  
+        return true;
+    }
+    else{
+        return false;
+    }
+}
 
 // remove the last card element from the source tableau pile after moving it
 function removeSourcePile(fromIndex){
@@ -116,12 +129,18 @@ function addCardToTarget(targetPile,newImg){
 }
 
 function displayNextCardInTableu(fromIndex){
-    if (alltableu[fromIndex].length===0){
+   if (alltableu[fromIndex].length===0){
         tableauDisplayedCards[fromIndex]=null;
         tableauPileCards[fromIndex]=[];
         return;
     }
-    let fromTableuNext=alltableu[fromIndex][0];
+
+    let fromTableuNext=alltableu[fromIndex].shift();
+    
+    RevealNextTableauCard(fromIndex,fromTableuNext);
+    
+}
+function RevealNextTableauCard(fromIndex,fromTableuNext){
     let fromTableuNextImg=getCardImg(fromTableuNext);
     
     let revealedCard= tableauCards[fromIndex][tableauCards[fromIndex].length-1]
@@ -135,7 +154,6 @@ function displayNextCardInTableu(fromIndex){
     revealedCard.addEventListener("click",initializeTableauCardListeners());
 
 }
-
 /*This method takes inputs card1, card2 , fromIndex and toIndex
     card1 is the card that the user selected for example "H2"
     card2 is the display card on the current iteration of the display cards in the tableu piles for example "S2"
@@ -203,6 +221,9 @@ function addCardToTableu(card1,card2,fromIndex,toIndex){
             return true;
         }
     }
+
+
+
 function addCardImgToTableu(card,toIndex){
     let targetPile = document.getElementById(`tableau-${toIndex + 1}`);
     let newImg = document.createElement("img");
