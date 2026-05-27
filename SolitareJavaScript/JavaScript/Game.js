@@ -165,8 +165,7 @@ function canMoveToTableu(card1, card2) {
 
     let isRed1 = (card1Set === "H" || card1Set === "D");
     let isRed2 = (card2Set === "H" || card2Set === "D");
-    console.log(card1Num);
-    console.log(card2);
+    
     if (card1Num==="K"&&card2===""){
         return true;
     }
@@ -300,50 +299,68 @@ function moveFoundationToTableau(fromFoundationIndex, toTableauIndex) {
     return true;
 }
 
-
+function getNumReveledInTableuPile(PileIndex){
+    let count=0;
+    for (let i=0;i<tableauCards[PileIndex].length;i++){
+        if(tableauCards[PileIndex][i].src.split("pixelart/")[1]==="emptyCard.png"){
+            continue;
+        } 
+        else{
+            count=count+1;
+        }
+    }
+    return count;
+}
 
 function initializeTableauListeners() {
     for (let i = 0; i < tableauCards.length; i++) {
-        if (tableauCards[i].length === 0) { continue; }
+        for (let k = 0; k < tableauCards[i].length; k++) {
 
-        let oldCard = tableauCards[i][tableauCards[i].length - 1];
+          
+            (function(i, k) {
+                tableauCards[i][k].addEventListener("click", function () {
 
-        let newCard = oldCard.cloneNode(true);
-        if (oldCard.parentNode) {
-            oldCard.parentNode.replaceChild(newCard, oldCard);
-        }
-        tableauCards[i][tableauCards[i].length - 1] = newCard;
-
-        (function (pileIndex) {
-            newCard.addEventListener("click", function () {
-                let selectedCard = tableauDisplayedCards[pileIndex];
-
-                if (selectedCard.slice(1) === "A") {
-                    addAceFromTableuToFoundatoin(selectedCard, pileIndex);
-                    initializeTableauListeners();
-                    return;
-                }
-
-                let movedToTableau = false;
-                for (let j = 0; j < tableauCards.length; j++) {
-                    if (pileIndex === j) { continue; }
-
-                    let targetCard = tableauDisplayedCards[j];
-                    if (addCardToTableu(selectedCard, targetCard, pileIndex, j)) {
-                        movedToTableau = true;
-                        break;
+                    if (tableauCards[i][k].src.split("pixelart/")[1] === "emptyCard.png") {
+                        return;
                     }
-                }
 
-                if (!movedToTableau) {
-                    addCardToFoundation(selectedCard, pileIndex);
-                }
+                    let numRevealed = getNumReveledInTableuPile(i);
 
-                initializeTableauListeners();
-            });
-        })(i);
+                    let bottomFaceUpIndex = tableauPileCards[i].length - numRevealed;
+                    let bottomCard = tableauPileCards[i][tableauPileCards[i].length - 1];
+                    let topCard = tableauPileCards[i][0];
+
+                    if (bottomCard.slice(1) === "A") {
+                        addAceFromTableuToFoundatoin(bottomCard, i);
+                        initializeTableauListeners();
+                        return;
+                    }
+
+                    let movedToTableau = false;
+                    for (let j = 0; j < tableauCards.length; j++) {
+                        if (i !== j) {
+                            let targetCard = tableauPileCards[j][tableauPileCards[j].length-1];
+                            
+                            console.log(`${bottomCard} : ${targetCard}`);
+                            if (addCardToTableu(bottomCard, targetCard, i, j)) {
+                                
+                                movedToTableau = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!movedToTableau) {
+                        addCardToFoundation(bottomCard, i);
+                    }
+
+                    initializeTableauListeners();
+                });
+            })(i, k);
+        }
     }
 }
+
 
 function initializeFoundationListeners() {
     for (let i = 0; i < foundationpiles.length; i++) {
