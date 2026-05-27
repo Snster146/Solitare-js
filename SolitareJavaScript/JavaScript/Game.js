@@ -165,6 +165,11 @@ function canMoveToTableu(card1, card2) {
 
     let isRed1 = (card1Set === "H" || card1Set === "D");
     let isRed2 = (card2Set === "H" || card2Set === "D");
+    console.log(card1Num);
+    console.log(card2);
+    if (card1Num==="K"&&card2===""){
+        return true;
+    }
 
     return isRed1 !== isRed2 && cardOrder.indexOf(card2Num) - cardOrder.indexOf(card1Num) === 1;
 }
