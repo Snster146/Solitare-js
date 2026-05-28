@@ -135,6 +135,7 @@ function addCardToTarget(targetPile, newImg) {
 function displayNextCardInTableu(fromIndex) {
     if (alltableu[fromIndex].length === 0) {
         tableauDisplayedCards[fromIndex] = "";
+        // xxx
         tableauPileCards[fromIndex] = [];
         return;
     }
@@ -192,14 +193,35 @@ function addCardToTableuFromStock(card1, card2, toIndex) {
     }
 }
 
-function addCardToTableu(card1, card2, fromIndex, toIndex) {
+function addCardToTableu(card1, card2, fromIndex, toIndex, numCardsToMove) {
     if (canMoveToTableu(card1, card2)) {
-        tableauCards[fromIndex].pop();
-        tableauPileCards[fromIndex].pop();
+
+        // Default to moving 1 card if not specified
+        numCardsToMove = numCardsToMove || 1;
+
+        // Grab the cards to move from tableauPileCards (bottom of moving stack first)
+        let numRevealed = getNumReveledInTableuPile(fromIndex);
+        let stackStartIndex = tableauPileCards[fromIndex].length - numCardsToMove;
+        let cardsToMove = tableauPileCards[fromIndex].slice(stackStartIndex);
+
+        // Remove the moved cards and their DOM elements from source
+        for (let s = 0; s < numCardsToMove; s++) {
+            tableauCards[fromIndex].pop();
+            tableauPileCards[fromIndex].pop();
+            removeSourcePile(fromIndex);
+        }
+
+        // Also shift from alltableu to keep it in sync
         alltableu[fromIndex].shift();
-        addCardImgToTableu(card1, toIndex);
-        removeSourcePile(fromIndex);
+
+        // Add each card to the target pile
+        for (let s = 0; s < cardsToMove.length; s++) {
+            addCardImgToTableu(cardsToMove[s], toIndex);
+        }
+
+        // Reveal the next hidden card in the source pile
         displayNextCardInTableu(fromIndex);
+
         return true;
     }
     return false;
@@ -217,7 +239,6 @@ function addStockToFoundation(card) {
     let card1Num = card.slice(1);
 
     for (let i = 0; i < foundationState.length; i++) {
-        // FIX 2: read top of stack, not always [0]
         let currFoundationCard = foundationState[i][foundationState[i].length - 1];
 
         if (currFoundationCard === null) { continue; }
@@ -227,7 +248,6 @@ function addStockToFoundation(card) {
 
         if (card1Set === currFoundationSet &&
             cardOrder.indexOf(card1Num) - cardOrder.indexOf(currFoundationNum) === 1) {
-            // FIX 1: push onto foundation stack
             foundationState[i].push(card);
             foundationpiles[i].src = getCardImg(card);
             return true;
@@ -243,11 +263,9 @@ function addStockToFoundation(card) {
  */
 function addCardToFoundation(card, fromIndex) {
     let card1Set = card[0];
-    // FIX 6: use slice(1) for correct "10" handling
     let card1Num = card.slice(1);
 
     for (let i = 0; i < foundationState.length; i++) {
-        // FIX 2: read top of foundation stack, not always [0]
         let currFoundationCard = foundationState[i][foundationState[i].length - 1];
         if (currFoundationCard === null) { continue; }
 
@@ -258,7 +276,6 @@ function addCardToFoundation(card, fromIndex) {
             cardOrder.indexOf(card1Num) - cardOrder.indexOf(currFoundationNum) === 1) {
             tableauCards[fromIndex].pop();
             alltableu[fromIndex].shift();
-            // FIX 1: push onto foundation stack
             foundationState[i].push(card);
             foundationpiles[i].src = getCardImg(card);
             removeSourcePile(fromIndex);
@@ -316,7 +333,6 @@ function initializeTableauListeners() {
     for (let i = 0; i < tableauCards.length; i++) {
         for (let k = 0; k < tableauCards[i].length; k++) {
 
-          
             (function(i, k) {
                 tableauCards[i][k].addEventListener("click", function () {
 
@@ -325,33 +341,39 @@ function initializeTableauListeners() {
                     }
 
                     let numRevealed = getNumReveledInTableuPile(i);
+                    let totalCards = tableauPileCards[i].length;
 
-                    let bottomFaceUpIndex = tableauPileCards[i].length - numRevealed;
-                    let bottomCard = tableauPileCards[i][tableauPileCards[i].length - 1];
-                    let topCard = tableauPileCards[i][0];
+                    let firstFaceUpK = tableauCards[i].length - numRevealed;
+                    let faceUpClickedIndex = k - firstFaceUpK;
+                    let pileCardIndex = totalCards - numRevealed + faceUpClickedIndex;
+                    let clickedCard = tableauPileCards[i][pileCardIndex];
 
-                    if (bottomCard.slice(1) === "A") {
-                        addAceFromTableuToFoundatoin(bottomCard, i);
+                    let isTopCard = (k === tableauCards[i].length - 1);
+                    let isBottomCard = (k === firstFaceUpK);
+
+                    let numCardsToMove = tableauCards[i].length - k;
+
+                    if (isTopCard && clickedCard.slice(1) === "A") {
+                        addAceFromTableuToFoundatoin(clickedCard, i);
                         initializeTableauListeners();
                         return;
                     }
 
                     let movedToTableau = false;
                     for (let j = 0; j < tableauCards.length; j++) {
-                        if (i !== j) {
-                            let targetCard = tableauPileCards[j][tableauPileCards[j].length-1];
-                            
-                            console.log(`${bottomCard} : ${targetCard}`);
-                            if (addCardToTableu(bottomCard, targetCard, i, j)) {
-                                
-                                movedToTableau = true;
-                                break;
-                            }
+                        if (i === j) { continue; }
+                        if (tableauPileCards[j].length === 0) { continue; }
+
+                        let targetCard = tableauPileCards[j][tableauPileCards[j].length - 1];
+
+                        if (addCardToTableu(clickedCard, targetCard, i, j, numCardsToMove)) {
+                            movedToTableau = true;
+                            break;
                         }
                     }
 
-                    if (!movedToTableau) {
-                        addCardToFoundation(bottomCard, i);
+                    if (!movedToTableau && isTopCard) {
+                        addCardToFoundation(clickedCard, i);
                     }
 
                     initializeTableauListeners();
