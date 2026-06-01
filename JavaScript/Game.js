@@ -248,9 +248,8 @@ function addCardToTableu(card1, card2, fromIndex, toIndex, numCardsToMove) {
         
 
         // Also shift from alltableu to keep it in sync
-        if (alltableu[fromIndex].length!==1){alltableu[fromIndex].shift();
-            console.log("shifted ");console.log(alltableu[fromIndex].length);
-
+        if (alltableu[fromIndex].length!==1){
+            alltableu[fromIndex].shift();
         }
             
      
@@ -260,7 +259,14 @@ function addCardToTableu(card1, card2, fromIndex, toIndex, numCardsToMove) {
         }
 
         // Reveal the next hidden card in the source pile
-        displayNextCardInTableu(fromIndex);
+        let fromDisplayCount = tableauCards[fromIndex]
+        .filter(card => !card.src.endsWith("emptyCard.png"))
+        .length;
+
+        if (fromDisplayCount===0){
+            displayNextCardInTableu(fromIndex);
+
+        }
        
         return true;
     }
