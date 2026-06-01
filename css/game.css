@@ -7,7 +7,7 @@ body{
     overflow: hidden;
     font-size: 16px;
     background-color: #367a4e;
-
+    
 }
 
 .game {
@@ -15,7 +15,7 @@ body{
     flex-direction: column;
     font-family: '8bitfont';
     font-size: 32px;
-    color:white
+    color:white;
 }
 
 
@@ -88,10 +88,21 @@ body{
     margin-right:5% ;
 }
 .card-another img{
-    
+    /* min-width: 60%; */
     max-width: 100%;
     height: auto;
 }
+@media screen and (min-width:1200px) {
+ .card-another img{
+    /* min-width: 60%; */
+    width: 30%;
+    height: auto;
+}   
+    
+}
+
+
+
 
 .card-another:nth-child(2){top:-10%;}
 .card-another:nth-child(3){top:-20%;}
@@ -115,7 +126,7 @@ footer{
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    font-size: 0.9em;
+    font-size: 0.6em;
     border: 5px solid gold;
     background: linear-gradient(to bottom, #b4202a, red);
     align-self: center;
