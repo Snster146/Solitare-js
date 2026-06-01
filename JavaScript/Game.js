@@ -60,6 +60,7 @@ function initTabelauDisplayCards() {
         tableau1[0], tableau2[0], tableau3[0],
         tableau4[0], tableau5[0], tableau6[0], tableau7[0]
     ];
+    
 }
 
 
@@ -133,16 +134,22 @@ function addCardToTarget(targetPile, newImg) {
 }
 
 function displayNextCardInTableu(fromIndex) {
-    if (alltableu[fromIndex].length === 0) {
-        console.log("no more cards");
-        console.log(alltableu[fromIndex]);
-        tableauDisplayedCards[fromIndex] = "";
-        tableauPileCards[fromIndex] = [];
+    // if (alltableu[fromIndex].length === 0) {
+    //     console.log("no more cards");
+    //     console.log(alltableu[fromIndex]);
+    //     tableauDisplayedCards[fromIndex] = "";
+    //     tableauPileCards[fromIndex] = [];
+    //     return;
+    // }
+    try {
+        let fromTableuNext = alltableu[fromIndex].shift();
+        RevealNextTableauCard(fromIndex, fromTableuNext);
+    }    
+    catch (error) {
         return;
     }
-    let fromTableuNext = alltableu[fromIndex].shift();
-    RevealNextTableauCard(fromIndex, fromTableuNext);
 }
+    
 
 function RevealNextTableauCard(fromIndex, fromTableuNext) {
     let fromTableuNextImg = getCardImg(fromTableuNext);
@@ -248,10 +255,13 @@ function addCardToTableu(card1, card2, fromIndex, toIndex, numCardsToMove) {
         
 
         // Also shift from alltableu to keep it in sync
-        if (alltableu[fromIndex].length!==1){
-            alltableu[fromIndex].shift();
-        }
+        // console.log(alltableu[fromIndex].length);
+        // console.log(tableauCards[fromIndex].length);
+        // if (tableauCards[fromIndex].length!==0){
+        //     alltableu[fromIndex].shift();
+        // }
             
+        // alltableu[fromIndex].shift();
      
         // Add each card to the target pile
         for (let s = 0; s < cardsToMove.length; s++) {
@@ -262,11 +272,12 @@ function addCardToTableu(card1, card2, fromIndex, toIndex, numCardsToMove) {
         let fromDisplayCount = tableauCards[fromIndex]
         .filter(card => !card.src.endsWith("emptyCard.png"))
         .length;
-
-        if (fromDisplayCount===0){
+        console.log(fromDisplayCount);
+        // fix for replacing tableu card that is after the moved card
+        if (fromDisplayCount===0 ){
             displayNextCardInTableu(fromIndex);
-
         }
+        
        
         return true;
     }
@@ -378,6 +389,11 @@ function getNumReveledInTableuPile(PileIndex){
 function initializeTableauListeners() {
     for (let i = 0; i < tableauCards.length; i++) {
         for (let k = 0; k < tableauCards[i].length; k++) {
+
+            let oldCard = tableauCards[i][k];
+            let newCard = oldCard.cloneNode(true);
+            oldCard.parentNode.replaceChild(newCard, oldCard);
+            tableauCards[i][k] = newCard; // keep the array in sync
 
             (function(i, k) {
                 tableauCards[i][k].addEventListener("click", function () {
