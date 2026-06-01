@@ -192,8 +192,43 @@ function addCardToTableuFromStock(card1, card2, toIndex) {
         return true;
     }
 }
+function addKingToTableu(card1,fromIndex,numCardsToMove){
+    for (let i=0; i<tableauCards.length;i++){
+        if(tableauCards[i].length===0){
+            console.log(`${i} = 0`);
+            numCardsToMove = numCardsToMove || 1;
+            // move pile fromIndex to pile i 
+            let stackStartIndex = tableauPileCards[fromIndex].length - numCardsToMove;
+            let cardsToMove = tableauPileCards[fromIndex].slice(stackStartIndex);
+
+            // Remove the moved cards and their DOM elements from source
+            for (let s = 0; s < numCardsToMove; s++) {
+                tableauCards[fromIndex].pop();
+                tableauPileCards[fromIndex].pop();
+                removeSourcePile(fromIndex);
+            }
+
+            // Also shift from alltableu to keep it in sync
+            alltableu[fromIndex].shift();
+
+            // Add each card to the target pile
+            for (let s = 0; s < cardsToMove.length; s++) {
+                addCardImgToTableu(cardsToMove[s], i);
+            }
+            displayNextCardInTableu(fromIndex);
+
+            return true;
+            }
+
+    }
+}
 
 function addCardToTableu(card1, card2, fromIndex, toIndex, numCardsToMove) {
+    if (card1.slice(1)==="K"){
+        addKingToTableu(card1,fromIndex,numCardsToMove);
+                
+    }
+
     if (canMoveToTableu(card1, card2)) {
 
         // Default to moving 1 card if not specified
