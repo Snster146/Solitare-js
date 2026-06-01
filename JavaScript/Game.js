@@ -345,7 +345,17 @@ function addCardToFoundation(card, fromIndex) {
             foundationState[i].push(card);
             foundationpiles[i].src = getCardImg(card);
             removeSourcePile(fromIndex);
+            
+            let fromDisplayCount = tableauCards[fromIndex]
+            .filter(card => !card.src.endsWith("emptyCard.png"))
+            .length;
+
+            if (fromDisplayCount === 0) {
             displayNextCardInTableu(fromIndex);
+            }
+
+
+            // displayNextCardInTableu(fromIndex);
             return true;
         }
     }
