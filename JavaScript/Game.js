@@ -142,18 +142,23 @@ function displayNextCardInTableu(fromIndex) {
     //     return;
     // }
     try {
+        console.log(alltableu[fromIndex]);
         let fromTableuNext = alltableu[fromIndex].shift();
+        console.log(fromTableuNext);
         RevealNextTableauCard(fromIndex, fromTableuNext);
     }    
     catch (error) {
+        console.log("error");
         return;
     }
 }
     
 
 function RevealNextTableauCard(fromIndex, fromTableuNext) {
+    console.log("here");
     let fromTableuNextImg = getCardImg(fromTableuNext);
     let revealedCard = tableauCards[fromIndex][tableauCards[fromIndex].length - 1];
+    console.log(revealedCard);
     revealedCard.src = fromTableuNextImg;
     tableauDisplayedCards[fromIndex] = fromTableuNext;
     tableauPileCards[fromIndex].push(fromTableuNext);
@@ -260,8 +265,13 @@ function addCardToTableu(card1, card2, fromIndex, toIndex, numCardsToMove) {
         // if (tableauCards[fromIndex].length!==0){
         //     alltableu[fromIndex].shift();
         // }
-            
-        // alltableu[fromIndex].shift();
+        
+        console.log(alltableu[fromIndex].length);
+        if (alltableu[fromIndex].length!==1){
+            alltableu[fromIndex].shift();
+
+        }
+        console.log(alltableu[fromIndex].length);
      
         // Add each card to the target pile
         for (let s = 0; s < cardsToMove.length; s++) {
@@ -269,15 +279,14 @@ function addCardToTableu(card1, card2, fromIndex, toIndex, numCardsToMove) {
         }
 
         // Reveal the next hidden card in the source pile
+        // After removing moved cards, check if the new top card is face-down
         let fromDisplayCount = tableauCards[fromIndex]
         .filter(card => !card.src.endsWith("emptyCard.png"))
         .length;
-        console.log(fromDisplayCount);
-        // fix for replacing tableu card that is after the moved card
-        if (fromDisplayCount===0 ){
-            displayNextCardInTableu(fromIndex);
+
+        if (fromDisplayCount === 0) {
+        displayNextCardInTableu(fromIndex);
         }
-        
        
         return true;
     }
