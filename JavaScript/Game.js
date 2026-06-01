@@ -134,8 +134,9 @@ function addCardToTarget(targetPile, newImg) {
 
 function displayNextCardInTableu(fromIndex) {
     if (alltableu[fromIndex].length === 0) {
+        console.log("no more cards");
+        console.log(alltableu[fromIndex]);
         tableauDisplayedCards[fromIndex] = "";
-        // xxx
         tableauPileCards[fromIndex] = [];
         return;
     }
@@ -195,7 +196,6 @@ function addCardToTableuFromStock(card1, card2, toIndex) {
 function addKingToTableu(card1,fromIndex,numCardsToMove){
     for (let i=0; i<tableauCards.length;i++){
         if(tableauCards[i].length===0){
-            console.log(`${i} = 0`);
             numCardsToMove = numCardsToMove || 1;
             // move pile fromIndex to pile i 
             let stackStartIndex = tableauPileCards[fromIndex].length - numCardsToMove;
@@ -226,7 +226,7 @@ function addKingToTableu(card1,fromIndex,numCardsToMove){
 function addCardToTableu(card1, card2, fromIndex, toIndex, numCardsToMove) {
     if (card1.slice(1)==="K"){
         addKingToTableu(card1,fromIndex,numCardsToMove);
-                
+
     }
 
     if (canMoveToTableu(card1, card2)) {
@@ -245,10 +245,15 @@ function addCardToTableu(card1, card2, fromIndex, toIndex, numCardsToMove) {
             tableauPileCards[fromIndex].pop();
             removeSourcePile(fromIndex);
         }
+        
 
         // Also shift from alltableu to keep it in sync
-        alltableu[fromIndex].shift();
+        if (alltableu[fromIndex].length!==1){alltableu[fromIndex].shift();
+            console.log("shifted ");console.log(alltableu[fromIndex].length);
 
+        }
+            
+     
         // Add each card to the target pile
         for (let s = 0; s < cardsToMove.length; s++) {
             addCardImgToTableu(cardsToMove[s], toIndex);
@@ -256,7 +261,7 @@ function addCardToTableu(card1, card2, fromIndex, toIndex, numCardsToMove) {
 
         // Reveal the next hidden card in the source pile
         displayNextCardInTableu(fromIndex);
-
+       
         return true;
     }
     return false;
