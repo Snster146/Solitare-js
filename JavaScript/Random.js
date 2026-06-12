@@ -1,82 +1,36 @@
 /**
  * Random.js
  *
- * Provides randomized card selection utilities used to deal the tableau and stock.
+ * Provides randomization utilities used to build and shuffle a full
+ * 52 card deck for dealing a new game.
  */
-import { Allcard } from "./CardMaps.js";
 
 /**
- * Shuffle an array in place using Fisher-Yates.
- * @param {any[]} a - Array to shuffle.
+ * Shuffle an array in place using the Fisher-Yates algorithm.
+ * @param {any[]} array - Array to shuffle.
+ * @returns {any[]} The same array, shuffled.
  */
-function shuffle(a) {
-    for (let i = a.length - 1; i > 0; i--) {
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
+        [array[i], array[j]] = [array[j], array[i]];
     }
+    return array;
 }
 
 /**
- * Choose a random set of cards from the collection of suit maps.
- * @param {Map[]} Allcard - Array of card suit maps.
- * @returns {Map} A randomly selected set map.
+ * Build a flat array containing every card code from the four suit maps.
+ * @param {Map[]} allCard - Array of the four suit Maps (Hearts, Spades, Clubs, Diamonds).
+ * @returns {string[]} Array of all 52 card codes, e.g. ["H2", "H3", ..., "DK"].
  */
-function RandomSet(Allcard){
-    shuffle(Allcard);
-    return Allcard[0];
-}
-
-/**
- * Extract all card keys from a Map of card image resources.
- * @param {Map} set - Single suit map of card codes to image paths.
- * @returns {string[]} List of card codes.
- */
-function ProcessSetCards(set){
-    
-    let selectedKeys =[] 
-    set.keys().forEach(element => {
-    selectedKeys.push(element);    
-
-});
-    return selectedKeys;
-
-}
-    
-/**
- * Return a single random card code from a list of available cards.
- * @param {string[]} cardsInSet - Array of card codes.
- * @returns {string} Randomly selected card code.
- */
-function SelectCardFromSet(cardsInSet){
-    shuffle(cardsInSet);
-    // let selectedCard= (selectedKeys[0]);
-    return cardsInSet[0];
-
-}
-
-function SelectRandomCard(Allcards){
-    let selectedSet=RandomSet(Allcards);
-    let cards=ProcessSetCards(selectedSet);
-    return SelectCardFromSet(cards);
-}
-
-let visitedCards=[]
-function Select_i_RandomCards(Allcards,i){
-    let iRandomCards=[]
-    for (let j =0;j<i;j++){
-        let selectedCard=SelectRandomCard(Allcard);
-    if (!(visitedCards.includes(selectedCard))){
-        iRandomCards.push(selectedCard);  
-        visitedCards.push(selectedCard);
+function buildDeck(allCard) {
+    let deck = [];
+    for (let i = 0; i < allCard.length; i++) {
+        for (const cardCode of allCard[i].keys()) {
+            deck.push(cardCode);
+        }
     }
-    else{
-        j--;
-    }
-    
-    }
-    return iRandomCards;
-
+    return deck;
 }
 
-
-export { SelectRandomCard, Select_i_RandomCards,visitedCards};
+export { shuffle, buildDeck };

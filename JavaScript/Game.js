@@ -5,32 +5,23 @@
  * stock/waste behavior, and foundation pile updates.
  */
 
-import { HeartCards, SpadeCards, ClubCards, DiamondCards, Allcard, tableauCards } from "./CardMaps.js";
-import { SelectRandomCard, visitedCards } from "./Random.js";
-import { tableau1, tableau2, tableau3, tableau4, tableau5, tableau6, tableau7, stockCards, alltableu } from "./fillPiles.js";
-import {
-    addtableau1Cards, addtableau2Cards, addtableau3Cards, addtableau4Cards,
-    addtableau5Cards, addtableau6Cards, addtableau7Cards,
-    addtableaucards, getCardImg, getCardImgArr
-} from "./addTableu.js";
+import { getCardImg, BACK_CARD_IMG, EMPTY_CARD_IMG, cardOrder } from "./CardMaps.js";
+import { dealNewGame } from "./fillPiles.js";
 
-/**
- * Cards that have moved from stock into the waste area.
- * @type {string[]}
- */
-var stockCards2 = [];
+/** @type {{code: string, faceUp: boolean}[][]} 7 tableau piles */
+let tableaus = [];
 
-// Foundation pile elements and state
-var foundationpiles = [
-    document.getElementById("foundation-1"),
-    document.getElementById("foundation-2"),
-    document.getElementById("foundation-3"),
-    document.getElementById("foundation-4")
-];
+/** @type {string[][]} 4 foundation piles, suit determined by the first (Ace) card placed */
+let foundations = [[], [], [], []];
 
-var foundationState = [[null], [null], [null], [null]];
+/** @type {string[]} Face-down draw pile. Last element is the next card to draw. */
+let stock = [];
 
-var tableauPiles = [
+/** @type {string[]} Face-up waste pile. Last element is the currently visible card. */
+let waste = [];
+
+// ----- DOM references -----
+const tableauEls = [
     document.getElementById("tableau-1"),
     document.getElementById("tableau-2"),
     document.getElementById("tableau-3"),
@@ -40,494 +31,329 @@ var tableauPiles = [
     document.getElementById("tableau-7")
 ];
 
-// Stores the displayed (top face-up) card code in each tableau pile
-var tableauDisplayedCards;
-
-var tableauPileCards = [
-    [tableau1[0]], [tableau2[0]], [tableau3[0]], [tableau4[0]],
-    [tableau5[0]], [tableau6[0]], [tableau7[0]]
+const foundationEls = [
+    document.getElementById("foundation-1"),
+    document.getElementById("foundation-2"),
+    document.getElementById("foundation-3"),
+    document.getElementById("foundation-4")
 ];
 
-var cardOrder = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
-
-document.addEventListener("DOMContentLoaded", function () {
-    addtableaucards();
-    initTabelauDisplayCards();
-});
-
-function initTabelauDisplayCards() {
-    tableauDisplayedCards = [
-        tableau1[0], tableau2[0], tableau3[0],
-        tableau4[0], tableau5[0], tableau6[0], tableau7[0]
-    ];
-    
-}
-
-
+const stockEl = document.getElementById("card-stock1");
+const stockImgEl = stockEl ? stockEl.querySelector("img") : null;
+const wasteEl = document.getElementById("card-stock2");
+const wasteImgEl = document.getElementById("card-stock2_img");
+const winMessageEl = document.getElementById("win-message");
+const newGameBtn = document.getElementById("new-game-btn");
+const winNewGameBtn = document.getElementById("win-new-game-btn");
 /**
- * Move an Ace from the waste pile into the first available (empty) foundation pile.
- * @param {string} card - A card code such as "HA".
+ * Start (or restart) a brand new game.
  */
-function addAceToFoundationPile(card) {
-    for (let i = 0; i < foundationpiles.length; i++) {
-        if (addToFoundation(i, card)) {
-            stockCards2.pop();
-            // FIX 5: show new top of waste pile, not draw pile
-            updateWasteImage();
-            break;
-        }
-    }
-}
+function startNewGame() {
+    const dealt = dealNewGame();
+    tableaus = dealt.tableaus;
+    foundations = [[], [], [], []];
+    stock = dealt.stock;
+    waste = [];
 
-function addAceFromTableuToFoundatoin(card, fromIndex) {
-    tableauCards[fromIndex].pop();
-    alltableu[fromIndex].shift();
-
-    for (let i = 0; i < foundationpiles.length; i++) {
-        if (addToFoundation(i, card) === true) {
-            removeAndDisplayNext(fromIndex);
-            break;
-        }
+    if (winMessageEl) {
+        winMessageEl.classList.remove("show");
     }
+
+    render();
 }
 
 /**
- * Add a card to a foundation pile at the given index.
- * Accepts an Ace into an empty slot; otherwise returns false.
- * @param {number} foundationIndex
- * @param {string} card
- * @returns {boolean}
+ * Re-render the entire board from the current game state.
  */
-function addToFoundation(foundationIndex, card) {
-    let topCard = foundationState[foundationIndex][foundationState[foundationIndex].length - 1];
-    if (topCard === null) {
-        // FIX 1: push onto the stack instead of overwriting [0]
-        foundationState[foundationIndex].push(card);
-        foundationpiles[foundationIndex].src = getCardImg(card);
-        return true;
-    }
-    return false;
+function render() {
+    renderTableaus();
+    renderFoundations();
+    renderStock();
+    renderWaste();
+    checkWinCondition();
 }
 
+function renderTableaus() {
+    for (let i = 0; i < tableaus.length; i++) {
+        const pileEl = tableauEls[i];
+        pileEl.innerHTML = "";
 
-function removeAndDisplayNext(fromIndex) {
-    tableauPileCards[fromIndex].pop();
-    removeSourcePile(fromIndex);
-    displayNextCardInTableu(fromIndex);
-}
+        const pile = tableaus[i];
+        for (let k = 0; k < pile.length; k++) {
+            const card = pile[k];
 
-function removeSourcePile(fromIndex) {
-    let sourcePile = document.getElementById(`tableau-${fromIndex + 1}`);
-    sourcePile.removeChild(sourcePile.lastElementChild);
-}
+            const wrapper = document.createElement("div");
+            wrapper.classList.add("card-another");
 
-/**
- * Wraps a moved card image in a container div and appends it to the target pile.
- * @param {HTMLElement} targetPile
- * @param {HTMLImageElement} newImg
- */
-function addCardToTarget(targetPile, newImg) {
-    let wrapper = document.createElement("div");
-    wrapper.classList.add("card-another");
-    wrapper.appendChild(newImg);
-    targetPile.appendChild(wrapper);
-}
+            const img = document.createElement("img");
+            img.src = card.faceUp ? getCardImg(card.code) : BACK_CARD_IMG;
 
-function displayNextCardInTableu(fromIndex) {
-    // if (alltableu[fromIndex].length === 0) {
-    //     console.log("no more cards");
-    //     console.log(alltableu[fromIndex]);
-    //     tableauDisplayedCards[fromIndex] = "";
-    //     tableauPileCards[fromIndex] = [];
-    //     return;
-    // }
-    try {
-        console.log(alltableu[fromIndex]);
-        let fromTableuNext = alltableu[fromIndex].shift();
-        console.log(fromTableuNext);
-        RevealNextTableauCard(fromIndex, fromTableuNext);
-    }    
-    catch (error) {
-        console.log("error");
-        return;
-    }
-}
-    
-
-function RevealNextTableauCard(fromIndex, fromTableuNext) {
-    console.log("here");
-    let fromTableuNextImg = getCardImg(fromTableuNext);
-    let revealedCard = tableauCards[fromIndex][tableauCards[fromIndex].length - 1];
-    console.log(revealedCard);
-    revealedCard.src = fromTableuNextImg;
-    tableauDisplayedCards[fromIndex] = fromTableuNext;
-    tableauPileCards[fromIndex].push(fromTableuNext);
-}
-
-/**
- * Checks whether card1 can legally be placed on top of card2 in the tableau.
- * Rules: alternating colour, descending rank by 1. Aces cannot be placed on tableau.
- */
-function canMoveToTableu(card1, card2) {
-    let card1Set = card1[0];
-    let card2Set = card2[0];
-
-    let card1Num = card1.slice(1);
-    let card2Num = card2.slice(1);
-
-    if (card1Num === "A") { return false; }
-
-    let isRed1 = (card1Set === "H" || card1Set === "D");
-    let isRed2 = (card2Set === "H" || card2Set === "D");
-    
-    if (card1Num==="K"&&card2===""){
-        return true;
-    }
-
-    return isRed1 !== isRed2 && cardOrder.indexOf(card2Num) - cardOrder.indexOf(card1Num) === 1;
-}
-
-function addCardImgToTableu(card, toIndex) {
-    let targetPile = document.getElementById(`tableau-${toIndex + 1}`);
-    let newImg = document.createElement("img");
-    newImg.src = getCardImg(card);
-    newImg.id = `card-tableau-${toIndex + 1}-${tableauCards[toIndex].length + 1}`;
-    tableauCards[toIndex].push(newImg);
-    addCardToTarget(targetPile, newImg);
-    tableauDisplayedCards[toIndex] = card;
-    tableauPileCards[toIndex].push(card);
-}
-
-function addCardToTableuFromStock(card1, card2, toIndex) {
-    if (canMoveToTableu(card1, card2)) {
-        addCardImgToTableu(card1, toIndex);
-        initializeTableauListeners();
-        return true;
-    }
-}
-function addKingToTableu(card1,fromIndex,numCardsToMove){
-    for (let i=0; i<tableauCards.length;i++){
-        if(tableauCards[i].length===0){
-            numCardsToMove = numCardsToMove || 1;
-            // move pile fromIndex to pile i 
-            let stackStartIndex = tableauPileCards[fromIndex].length - numCardsToMove;
-            let cardsToMove = tableauPileCards[fromIndex].slice(stackStartIndex);
-
-            // Remove the moved cards and their DOM elements from source
-            for (let s = 0; s < numCardsToMove; s++) {
-                tableauCards[fromIndex].pop();
-                tableauPileCards[fromIndex].pop();
-                removeSourcePile(fromIndex);
+            if (card.faceUp) {
+                img.style.cursor = "pointer";
+                img.addEventListener("click", () => handleTableauCardClick(i, k));
             }
 
-            // Also shift from alltableu to keep it in sync
-            alltableu[fromIndex].shift();
-
-            // Add each card to the target pile
-            for (let s = 0; s < cardsToMove.length; s++) {
-                addCardImgToTableu(cardsToMove[s], i);
-            }
-            displayNextCardInTableu(fromIndex);
-
-            return true;
-            }
-
-    }
-}
-
-function addCardToTableu(card1, card2, fromIndex, toIndex, numCardsToMove) {
-    if (card1.slice(1)==="K"){
-        addKingToTableu(card1,fromIndex,numCardsToMove);
-
-    }
-
-    if (canMoveToTableu(card1, card2)) {
-
-        // Default to moving 1 card if not specified
-        numCardsToMove = numCardsToMove || 1;
-
-        // Grab the cards to move from tableauPileCards (bottom of moving stack first)
-        let numRevealed = getNumReveledInTableuPile(fromIndex);
-        let stackStartIndex = tableauPileCards[fromIndex].length - numCardsToMove;
-        let cardsToMove = tableauPileCards[fromIndex].slice(stackStartIndex);
-
-        // Remove the moved cards and their DOM elements from source
-        for (let s = 0; s < numCardsToMove; s++) {
-            tableauCards[fromIndex].pop();
-            tableauPileCards[fromIndex].pop();
-            removeSourcePile(fromIndex);
-        }
-        
-
-        // Also shift from alltableu to keep it in sync
-        // console.log(alltableu[fromIndex].length);
-        // console.log(tableauCards[fromIndex].length);
-        // if (tableauCards[fromIndex].length!==0){
-        //     alltableu[fromIndex].shift();
-        // }
-        
-        console.log(alltableu[fromIndex].length);
-        if (alltableu[fromIndex].length!==1){
-            alltableu[fromIndex].shift();
-
-        }
-        console.log(alltableu[fromIndex].length);
-     
-        // Add each card to the target pile
-        for (let s = 0; s < cardsToMove.length; s++) {
-            addCardImgToTableu(cardsToMove[s], toIndex);
-        }
-
-        // Reveal the next hidden card in the source pile
-        // After removing moved cards, check if the new top card is face-down
-        let fromDisplayCount = tableauCards[fromIndex]
-        .filter(card => !card.src.endsWith("emptyCard.png"))
-        .length;
-
-        if (fromDisplayCount === 0) {
-        displayNextCardInTableu(fromIndex);
-        }
-       
-        return true;
-    }
-    return false;
-}
-
-
-/**
- * Try to move the top waste card onto any matching foundation pile.
- * @param {string} card
- * @returns {boolean}
- */
-function addStockToFoundation(card) {
-    let card1Set = card[0];
-    // FIX 6: use slice(1) for correct "10" handling
-    let card1Num = card.slice(1);
-
-    for (let i = 0; i < foundationState.length; i++) {
-        let currFoundationCard = foundationState[i][foundationState[i].length - 1];
-
-        if (currFoundationCard === null) { continue; }
-
-        let currFoundationSet = currFoundationCard[0];
-        let currFoundationNum = currFoundationCard.slice(1);
-
-        if (card1Set === currFoundationSet &&
-            cardOrder.indexOf(card1Num) - cardOrder.indexOf(currFoundationNum) === 1) {
-            foundationState[i].push(card);
-            foundationpiles[i].src = getCardImg(card);
-            return true;
-        }
-    }
-    return false;
-}
-
-/**
- * Try to move a face-up tableau card onto any matching foundation pile.
- * @param {string} card  - The card to move.
- * @param {number} fromIndex - Source tableau index.
- */
-function addCardToFoundation(card, fromIndex) {
-    let card1Set = card[0];
-    let card1Num = card.slice(1);
-
-    for (let i = 0; i < foundationState.length; i++) {
-        let currFoundationCard = foundationState[i][foundationState[i].length - 1];
-        if (currFoundationCard === null) { continue; }
-
-        let currFoundationSet = currFoundationCard[0];
-        let currFoundationNum = currFoundationCard.slice(1);
-
-        if (card1Set === currFoundationSet &&
-            cardOrder.indexOf(card1Num) - cardOrder.indexOf(currFoundationNum) === 1) {
-            tableauCards[fromIndex].pop();
-            alltableu[fromIndex].shift();
-            foundationState[i].push(card);
-            foundationpiles[i].src = getCardImg(card);
-            removeSourcePile(fromIndex);
-            
-            let fromDisplayCount = tableauCards[fromIndex]
-            .filter(card => !card.src.endsWith("emptyCard.png"))
-            .length;
-
-            if (fromDisplayCount === 0) {
-            displayNextCardInTableu(fromIndex);
-            }
-
-
-            // displayNextCardInTableu(fromIndex);
-            return true;
-        }
-    }
-    return false;
-}
-
-/**
- * Move the top card of a foundation pile back onto a tableau pile.
- * @param {number} fromFoundationIndex
- * @param {number} toTableauIndex
- * @returns {boolean}
- */
-function moveFoundationToTableau(fromFoundationIndex, toTableauIndex) {
-    let foundationPile = foundationState[fromFoundationIndex];
-
-    if (foundationPile.length === 0) { return false; }
-
-    let topCard = foundationPile[foundationPile.length - 1];
-    if (topCard === null) { return false; }
-
-    let tableauCard = tableauDisplayedCards[toTableauIndex];
-
-    if (!canMoveToTableu(topCard, tableauCard)) { return false; }
-
-    foundationPile.pop();
-    addCardImgToTableu(topCard, toTableauIndex);
-
-    // Update foundation display
-    let newTop = foundationPile[foundationPile.length - 1];
-    foundationpiles[fromFoundationIndex].src = (newTop && newTop !== null)
-        ? getCardImg(newTop)
-        : "";
-
-    return true;
-}
-
-function getNumReveledInTableuPile(PileIndex){
-    let count=0;
-    for (let i=0;i<tableauCards[PileIndex].length;i++){
-        if(tableauCards[PileIndex][i].src.split("pixelart/")[1]==="emptyCard.png"){
-            continue;
-        } 
-        else{
-            count=count+1;
-        }
-    }
-    return count;
-}
-
-function initializeTableauListeners() {
-    for (let i = 0; i < tableauCards.length; i++) {
-        for (let k = 0; k < tableauCards[i].length; k++) {
-
-            let oldCard = tableauCards[i][k];
-            let newCard = oldCard.cloneNode(true);
-            oldCard.parentNode.replaceChild(newCard, oldCard);
-            tableauCards[i][k] = newCard; // keep the array in sync
-
-            (function(i, k) {
-                tableauCards[i][k].addEventListener("click", function () {
-
-                    if (tableauCards[i][k].src.split("pixelart/")[1] === "emptyCard.png") {
-                        return;
-                    }
-
-                    let numRevealed = getNumReveledInTableuPile(i);
-                    let totalCards = tableauPileCards[i].length;
-
-                    let firstFaceUpK = tableauCards[i].length - numRevealed;
-                    let faceUpClickedIndex = k - firstFaceUpK;
-                    let pileCardIndex = totalCards - numRevealed + faceUpClickedIndex;
-                    let clickedCard = tableauPileCards[i][pileCardIndex];
-
-                    let isTopCard = (k === tableauCards[i].length - 1);
-                    let isBottomCard = (k === firstFaceUpK);
-
-                    let numCardsToMove = tableauCards[i].length - k;
-
-                    if (isTopCard && clickedCard.slice(1) === "A") {
-                        addAceFromTableuToFoundatoin(clickedCard, i);
-                        initializeTableauListeners();
-                        return;
-                    }
-
-                    let movedToTableau = false;
-                    for (let j = 0; j < tableauCards.length; j++) {
-                        if (i === j) { continue; }
-                        if (tableauPileCards[j].length === 0) { continue; }
-
-                        let targetCard = tableauPileCards[j][tableauPileCards[j].length - 1];
-
-                        if (addCardToTableu(clickedCard, targetCard, i, j, numCardsToMove)) {
-                            movedToTableau = true;
-                            break;
-                        }
-                    }
-
-                    if (!movedToTableau && isTopCard) {
-                        addCardToFoundation(clickedCard, i);
-                    }
-
-                    initializeTableauListeners();
-                });
-            })(i, k);
+            wrapper.appendChild(img);
+            pileEl.appendChild(wrapper);
         }
     }
 }
 
-
-function initializeFoundationListeners() {
-    for (let i = 0; i < foundationpiles.length; i++) {
-        foundationpiles[i].addEventListener("click", function () {
-            for (let j = 0; j < tableauDisplayedCards.length; j++) {
-                if (moveFoundationToTableau(i, j) === true) {
-                    initializeTableauListeners();
-                    return;
-                }
-            }
-        });
+function renderFoundations() {
+    for (let i = 0; i < foundations.length; i++) {
+        const pile = foundations[i];
+        if (pile.length > 0) {
+            foundationEls[i].src = getCardImg(pile[pile.length - 1]);
+        } else {
+            foundationEls[i].src = EMPTY_CARD_IMG;
+        }
     }
 }
 
+function renderStock() {
+    if (!stockImgEl) { return; }
+    stockImgEl.src = stock.length > 0 ? BACK_CARD_IMG : EMPTY_CARD_IMG;
+}
 
-function updateWasteImage() {
-    let wasteImg = document.getElementById("card-stock2_img");
-    if (stockCards2.length > 0) {
-        wasteImg.src = getCardImg(stockCards2[stockCards2.length - 1]);
+function renderWaste() {
+    if (waste.length > 0) {
+        wasteImgEl.src = getCardImg(waste[waste.length - 1]);
     } else {
-        wasteImg.src = "";
+        wasteImgEl.src = EMPTY_CARD_IMG;
     }
 }
 
+/**
+ * Whether `card` is a red suit (Hearts or Diamonds).
+ * @param {string} card
+ * @returns {boolean}
+ */
+function isRed(card) {
+    return card[0] === "H" || card[0] === "D";
+}
 
-document.getElementById("card-stock1").addEventListener("click", function () {
-    // Recycle waste pile back into stock when stock is empty
-    if (stockCards.length === 0) {
-        stockCards.push(...stockCards2.reverse());
-        stockCards2.length = 0;
+/**
+ * Checks whether `card` can legally be placed on top of a tableau pile
+ * whose current top card is `targetTopCode` (or `null` if the pile is empty).
+ * Rules: empty piles only accept Kings; otherwise alternating colour and
+ * descending rank by exactly 1.
+ * @param {string} card
+ * @param {string|null} targetTopCode
+ * @returns {boolean}
+ */
+function canPlaceOnTableau(card, targetTopCode) {
+    if (targetTopCode === null) {
+        return card.slice(1) === "K";
     }
 
-    let cardImg = getCardImg(stockCards[0]);
-    document.getElementById("card-stock2_img").src = cardImg;
+    const sameColour = isRed(card) === isRed(targetTopCode);
+    const rankDiff = cardOrder.indexOf(targetTopCode.slice(1)) - cardOrder.indexOf(card.slice(1));
 
-    stockCards2.push(stockCards[0]);
-    stockCards.shift();
-});
+    return !sameColour && rankDiff === 1;
+}
 
-document.getElementById("card-stock2").addEventListener("click", function () {
-    let currstockcard = stockCards2[stockCards2.length - 1];
-    if (!currstockcard) { return; }
+/**
+ * Checks whether `card` can legally be placed on a foundation pile.
+ * Empty foundations only accept an Ace; otherwise the card must match
+ * the foundation's suit and be exactly one rank above the current top card.
+ * @param {string} card
+ * @param {string[]} foundationPile
+ * @returns {boolean}
+ */
+function canPlaceOnFoundation(card, foundationPile) {
+    if (foundationPile.length === 0) {
+        return card.slice(1) === "A";
+    }
 
-    if (currstockcard.slice(1) === "A") {
-        addAceToFoundationPile(currstockcard);
-        // updateWasteImage is called inside addAceToFoundationPile
+    const topCard = foundationPile[foundationPile.length - 1];
+    const sameSuit = card[0] === topCard[0];
+    const rankDiff = cardOrder.indexOf(card.slice(1)) - cardOrder.indexOf(topCard.slice(1));
+
+    return sameSuit && rankDiff === 1;
+}
+
+/**
+ * Try to place `card` onto the first foundation pile that will accept it.
+ * @param {string} card
+ * @returns {boolean} true if the card was moved.
+ */
+function tryAddToFoundation(card) {
+    for (let i = 0; i < foundations.length; i++) {
+        if (canPlaceOnFoundation(card, foundations[i])) {
+            foundations[i].push(card);
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * Try to place `card` onto the first tableau pile (other than `excludeIndex`)
+ * that will accept it as a single card.
+ * @param {string} card
+ * @param {number} [excludeIndex] - Tableau index to skip (the source pile).
+ * @returns {boolean} true if the card was moved.
+ */
+function tryMoveCardToTableau(card, excludeIndex) {
+    for (let j = 0; j < tableaus.length; j++) {
+        if (j === excludeIndex) { continue; }
+
+        const targetPile = tableaus[j];
+        const targetTop = targetPile.length > 0 ? targetPile[targetPile.length - 1].code : null;
+
+        if (canPlaceOnTableau(card, targetTop)) {
+            targetPile.push({ code: card, faceUp: true });
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * After cards are removed from a tableau pile, flip its new top card
+ * face-up if needed.
+ * @param {number} pileIndex
+ */
+function flipNewTopCard(pileIndex) {
+    const pile = tableaus[pileIndex];
+    if (pile.length > 0 && !pile[pile.length - 1].faceUp) {
+        pile[pile.length - 1].faceUp = true;
+    }
+}
+
+/**
+ * Handle a click on the stock pile: draw a card to the waste pile, or
+ * recycle the waste pile back into the stock once it is empty.
+ */
+function handleStockClick() {
+    if (stock.length === 0) {
+        if (waste.length === 0) { return; }
+        stock = waste.reverse();
+        waste = [];
+    } else {
+        waste.push(stock.pop());
+    }
+    render();
+}
+
+/**
+ * Handle a click on the waste pile's top (visible) card: try to move it
+ * to a foundation, then to a tableau pile.
+ */
+function handleWasteClick() {
+    if (waste.length === 0) { return; }
+
+    const card = waste[waste.length - 1];
+
+    if (tryAddToFoundation(card) || tryMoveCardToTableau(card)) {
+        waste.pop();
+        render();
+    }
+}
+
+/**
+ * Handle a click on a face-up tableau card. If it's the top card of its
+ * pile, try moving it to a foundation, then to another tableau pile.
+ * Otherwise, try moving the whole face-up run starting at this card onto
+ * another tableau pile.
+ * @param {number} pileIndex
+ * @param {number} cardIndex
+ */
+function handleTableauCardClick(pileIndex, cardIndex) {
+    const pile = tableaus[pileIndex];
+    const card = pile[cardIndex];
+    if (!card) { return; }
+    const isTopCard = cardIndex === pile.length - 1;
+
+    if (isTopCard) {
+        if (tryAddToFoundation(card.code)) {
+            pile.pop();
+            flipNewTopCard(pileIndex);
+            render();
+            return;
+        }
+
+        if (tryMoveCardToTableau(card.code, pileIndex)) {
+            pile.pop();
+            flipNewTopCard(pileIndex);
+            render();
+            return;
+        }
+
         return;
     }
 
-    for (let i = 0; i < tableauDisplayedCards.length; i++) {
-        let targetCard = tableauDisplayedCards[i];
-        if (addCardToTableuFromStock(currstockcard, targetCard, i) === true) {
-            stockCards2.pop();
-            updateWasteImage();
+    // Moving a multi-card run: take this card and everything on top of it.
+    const movingCards = pile.slice(cardIndex);
+    const headCard = movingCards[0].code;
+
+    for (let j = 0; j < tableaus.length; j++) {
+        if (j === pileIndex) { continue; }
+
+        const targetPile = tableaus[j];
+        const targetTop = targetPile.length > 0 ? targetPile[targetPile.length - 1].code : null;
+
+        if (canPlaceOnTableau(headCard, targetTop)) {
+            tableaus[pileIndex] = pile.slice(0, cardIndex);
+            targetPile.push(...movingCards);
+
+            flipNewTopCard(pileIndex);
+            render();
             return;
         }
     }
+}
 
-    if (addStockToFoundation(currstockcard) === true) {
-        stockCards2.pop();
-        updateWasteImage();
+/**
+ * Handle a click on a foundation pile: move its top card back onto the
+ * first tableau pile that will accept it.
+ * @param {number} foundationIndex
+ */
+function handleFoundationClick(foundationIndex) {
+    const pile = foundations[foundationIndex];
+    if (pile.length === 0) { return; }
+
+    const topCard = pile[pile.length - 1];
+
+    for (let j = 0; j < tableaus.length; j++) {
+        const targetPile = tableaus[j];
+        const targetTop = targetPile.length > 0 ? targetPile[targetPile.length - 1].code : null;
+
+        if (canPlaceOnTableau(topCard, targetTop)) {
+            pile.pop();
+            targetPile.push({ code: topCard, faceUp: true });
+            render();
+            return;
+        }
     }
-});
+}
 
+/**
+ * The game is won once all four foundation piles hold a full 13-card suit
+ * (Ace through King).
+ */
+function checkWinCondition() {
+    const won = foundations.every(pile => pile.length === 13);
+    if (won && winMessageEl) {
+        winMessageEl.classList.add("show");
+    }
+}
 
-initializeTableauListeners();
-initializeFoundationListeners();
+if (stockEl) { stockEl.addEventListener("click", handleStockClick); }
+if (wasteEl) { wasteEl.addEventListener("click", handleWasteClick); }
+
+for (let i = 0; i < foundationEls.length; i++) {
+    foundationEls[i].addEventListener("click", () => handleFoundationClick(i));
+}
+
+if (newGameBtn) {
+    newGameBtn.addEventListener("click", startNewGame);
+}
+if (winNewGameBtn) {
+    winNewGameBtn.addEventListener("click", startNewGame);
+}
+
+// Module scripts run after the DOM has been parsed, so the board
+// elements above are already available - start the game immediately.
+startNewGame();
+

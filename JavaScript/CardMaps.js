@@ -66,43 +66,41 @@ var DiamondCards= new Map([
     ["DK","../images/pixelart/K_diamond.png"],
     ["DQ","../images/pixelart/Q_diamond.png"],
 ]);
+// All four suit maps together - used to build a full 52 card deck.
+var Allcard = [HeartCards, SpadeCards, ClubCards, DiamondCards];
 
-var tableauCards=[  //tableau 1s html img elements
-                    [document.getElementById("card-tableau-1-1")],
-                    //tableau 2s html img elements
-                    [document.getElementById("card-tableau-2-1"),
-                    document.getElementById("card-tableau-2-2")],
-                    //tableau 3s html img elements
-                    [document.getElementById("card-tableau-3-1"),
-                    document.getElementById("card-tableau-3-2"),
-                    document.getElementById("card-tableau-3-3")],
-                    //tableau 4s html img elements
-                    [document.getElementById("card-tableau-4-1"),
-                    document.getElementById("card-tableau-4-2"),
-                    document.getElementById("card-tableau-4-3"),
-                    document.getElementById("card-tableau-4-4")],
-                    //tableau 5s html img elements
-                    [document.getElementById("card-tableau-5-1"),
-                    document.getElementById("card-tableau-5-2"),
-                    document.getElementById("card-tableau-5-3"),
-                    document.getElementById("card-tableau-5-4"),
-                    document.getElementById("card-tableau-5-5")],
-                    //tableau 6s html img elements
-                    [document.getElementById("card-tableau-6-1"),
-                    document.getElementById("card-tableau-6-2"),
-                    document.getElementById("card-tableau-6-3"),
-                    document.getElementById("card-tableau-6-4"),
-                    document.getElementById("card-tableau-6-5"),
-                    document.getElementById("card-tableau-6-6")],
-                    //tableau 7s html img elements
-                    [document.getElementById("card-tableau-7-1"),
-                    document.getElementById("card-tableau-7-2"),
-                    document.getElementById("card-tableau-7-3"),
-                    document.getElementById("card-tableau-7-4"),
-                    document.getElementById("card-tableau-7-5"),
-                    document.getElementById("card-tableau-7-6"),
-                    document.getElementById("card-tableau-7-7")]
-                ];
+// Shared image paths used for face-down cards and empty pile slots.
+var BACK_CARD_IMG = "../images/pixelart/back_card.png";
+var EMPTY_CARD_IMG = "../images/pixelart/emptyCard.png";
 
-var Allcard=[HeartCards,SpadeCards,ClubCards,DiamondCards]
-export { HeartCards, SpadeCards, ClubCards, DiamondCards ,Allcard,tableauCards};
+/**
+ * Ranks in order from lowest to highest, used to determine valid
+ * tableau/foundation sequencing.
+ * @type {string[]}
+ */
+var cardOrder = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+
+/**
+ * Convert a single card code (e.g. "H2", "DQ", "C10") into its image path.
+ * @param {string} cardName
+ * @returns {string|undefined}
+ */
+function getCardImg(cardName) {
+    switch (cardName[0]) {
+        case "H":
+            return HeartCards.get(cardName);
+        case "D":
+            return DiamondCards.get(cardName);
+        case "S":
+            return SpadeCards.get(cardName);
+        case "C":
+            return ClubCards.get(cardName);
+        default:
+            return undefined;
+    }
+}
+
+export {
+    HeartCards, SpadeCards, ClubCards, DiamondCards, Allcard,
+    BACK_CARD_IMG, EMPTY_CARD_IMG, cardOrder, getCardImg
+};
